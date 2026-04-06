@@ -1,0 +1,10 @@
+/* Shiny text — порт эффекта motion/react (градиент + background-position) */
+.shiny-text {
+  display: inline-block;
+  -webkit-text-fill-color: transparent;
+}
+
+.shiny-text.is-disabled {
+  -webkit-text-fill-color: inherit;
+  background: none !important;
+}

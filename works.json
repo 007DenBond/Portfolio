@@ -1,0 +1,23 @@
+{
+  "images": [
+    "bot1.jpg",
+    "photo1.jpg",
+    "photo1.png",
+    "photo2.jpg",
+    "photo2.png",
+    "photo3.jpg",
+    "photo3.png",
+    "photo4.jpg",
+    "photo4.png",
+    "photo5.jpg",
+    "photo6.jpg"
+  ],
+  "videos": [
+    "reel1.mp4",
+    "reel2.mp4",
+    "reel3.mp4",
+    "reel4.mp4",
+    "reel5.mp4",
+    "reel6.mp4"
+  ]
+}
