@@ -13,9 +13,13 @@
         contact: "Связаться",
       },
       hero: {
-        title: "Я создаю цифровые решения, которые работают за вас",
+        title: "Я создаю цифровые решения, которые работают ЗА ВАС",
+        titleStart: "Я",
+        titleMiddle: " создаю цифровые решения, которые работают ",
+        titleEnd: "ЗА ВАС",
         subtitle: "AI-КОНТЕНТ, ВИДЕОПРОДАКШН, САЙТЫ И БОТЫ ПОД КЛЮЧ",
         cta: "Обсудить проект",
+        ctaWork: "Мои работы",
         scroll: "Прокрутить вниз",
       },
       about: {
@@ -133,9 +137,13 @@
         contact: "Contact",
       },
       hero: {
-        title: "I don't just write code — I craft experiences",
+        title: "I create digital solutions that work FOR YOU",
+        titleStart: "I",
+        titleMiddle: " create digital solutions that work ",
+        titleEnd: "FOR YOU",
         subtitle: "AI CONTENT, VIDEO PRODUCTION, WEBSITES & BOTS",
         cta: "Discuss a project",
+        ctaWork: "My work",
         scroll: "Scroll down",
       },
       about: {

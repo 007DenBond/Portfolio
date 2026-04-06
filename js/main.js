@@ -853,8 +853,6 @@
     function animateCards(cards) {
       function vis(card) {
         card.classList.add("is-visible");
-        card.style.opacity = "1";
-        card.style.transform = "translateY(0)";
       }
       if (prefersReducedMotion.matches) {
         cards.forEach(vis);
@@ -877,8 +875,29 @@
         playIc.style.opacity = on ? "" : "0";
       }
 
-      vid.pause();
-      vid.currentTime = 0;
+      var PREVIEW_T = 0.1;
+      function setPreviewFrame() {
+        try {
+          vid.currentTime = PREVIEW_T;
+        } catch (e) {
+          /* ignore */
+        }
+      }
+      function pauseAtPreview() {
+        vid.pause();
+        setPreviewFrame();
+      }
+      if (vid.readyState >= 2) {
+        pauseAtPreview();
+      } else {
+        vid.addEventListener(
+          "loadeddata",
+          function () {
+            pauseAtPreview();
+          },
+          { once: true }
+        );
+      }
       playIconVisible(true);
 
       var hoverFine = window.matchMedia("(hover: hover)").matches;
@@ -891,8 +910,7 @@
         });
         card.addEventListener("mouseleave", function () {
           playIconVisible(true);
-          vid.pause();
-          vid.currentTime = 0;
+          pauseAtPreview();
         });
       }
 
@@ -906,14 +924,17 @@
               for (var i = 0; i < all.length; i++) {
                 if (all[i] !== vid) {
                   all[i].pause();
-                  all[i].currentTime = 0;
+                  try {
+                    all[i].currentTime = 0.1;
+                  } catch (e2) {
+                    /* ignore */
+                  }
                 }
               }
               vid.play().catch(function () {});
               playIconVisible(false);
             } else {
-              vid.pause();
-              vid.currentTime = 0;
+              pauseAtPreview();
               playIconVisible(true);
             }
           },
@@ -934,9 +955,6 @@
       var article = document.createElement("article");
       article.className = "portfolio-card";
       article.setAttribute("data-id", String(item.id));
-      article.style.opacity = "0";
-      article.style.transform = "translateY(20px)";
-      article.style.transition = "opacity 0.4s ease, transform 0.4s ease";
 
       var media = document.createElement("div");
       media.className = "portfolio-card__media";

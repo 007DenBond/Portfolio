@@ -65,14 +65,19 @@
     <section class="hero" id="hero">
       <div class="hero__inner">
         <div class="hero__content" id="heroContent">
-          <h1 class="hero__title hero-reveal hero-reveal--title" data-i18n="hero.title">
-            Я создаю цифровые решения, которые работают за вас
+          <h1 class="hero__title hero-reveal hero-reveal--title hero-title-typing" aria-live="polite">
+            <span class="hero__title-inner">
+              <span class="hero-typing">
+                <span class="hero-title-accent" id="heroTypingStart"></span><span class="hero-title-main" id="heroTypingMiddle"></span><span class="hero-title-accent" id="heroTypingEnd"></span>
+              </span><span class="typing-cursor typing-cursor--active" id="heroTypingCursor" aria-hidden="true">_</span>
+            </span>
           </h1>
           <p class="hero__subtitle hero-reveal hero-reveal--sub" data-i18n="hero.subtitle">
             AI-КОНТЕНТ, ВИДЕОПРОДАКШН, САЙТЫ И БОТЫ ПОД КЛЮЧ
           </p>
-          <div class="hero__buttons hero-reveal hero-reveal--cta">
-            <a href="#contact" class="btn btn--hero-cta"><span data-i18n="hero.cta">Обсудить проект</span> <span class="btn__arrow">→</span></a>
+          <div class="hero__buttons hero-actions hero-reveal hero-reveal--cta">
+            <a href="#contact" class="btn btn--primary btn--hero-pill"><span data-i18n="hero.cta">Обсудить проект</span> <span class="btn__arrow">→</span></a>
+            <a href="#projects" class="btn btn--outline btn--hero-pill" data-i18n="hero.ctaWork">Мои работы</a>
           </div>
         </div>
       </div>
@@ -490,6 +495,7 @@
   <script src="js/i18n.js"></script>
   <script src="js/icons-inline.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/hero-typing.js"></script>
   <script>
 (function() {
   const canvas = document.getElementById('neural-bg');
