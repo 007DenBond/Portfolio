@@ -1,16 +1,16 @@
 {
   "images": [
     "bot1.jpg",
-    "photo1.jpg",
-    "photo1.png",
-    "photo2.jpg",
-    "photo2.png",
-    "photo3.jpg",
-    "photo3.png",
-    "photo4.jpg",
-    "photo4.png",
-    "photo5.jpg",
-    "photo6.jpg"
+    "DenBOND_photo1.webp",
+    "DenBOND_photo1.webp",
+    "DenBOND_photo2.webp",
+    "DenBOND_photo2.webp",
+    "DenBOND_photo3.webp",
+    "DenBOND_photo3.webp",
+    "DenBOND_photo4-.webp",
+    "DenBOND_photo4.webp",
+    "DenBOND_photo5.webp",
+    "DenBOND_photo6.webp"
   ],
   "videos": [
     "reel1.mp4",
@@ -18,6 +18,7 @@
     "reel3.mp4",
     "reel4.mp4",
     "reel5.mp4",
-    "reel6.mp4"
+    "reel6.mp4",
+    "reel7.mp4"
   ]
 }

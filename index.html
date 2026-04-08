@@ -43,7 +43,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           </span>
         </button>
-        <a href="#contact" class="nav__cta" data-i18n="nav.contact">Связаться</a>
+        <a href="#contact" class="nav__cta btn btn--primary" data-i18n="nav.contact">Связаться</a>
         <button type="button" class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -96,33 +96,29 @@
             <img src="about.png" alt="Den BOND" width="640" height="800" loading="lazy" decoding="async" class="about__img" />
           </figure>
           <div class="about__copy">
-            <div class="about__grid">
-              <div class="about__col section-animate">
-                <p data-i18n="about.lead">Создаю AI-контент рекламного качества. Снимаю и монтирую видео — один из моих рилсов набрал 1&nbsp;000&nbsp;000+ просмотров. Разрабатываю Telegram-ботов и сайты.</p>
+            <div class="about-premium section-animate">
+              <p class="about-premium__eyebrow" data-i18n="about.eyebrow">AI · WEB · AUTOMATION</p>
+              <h3 class="about-premium__headline" data-i18n="about.headline">Делаю цифровые продукты, которые выглядят дороже и работают под бизнес-результат</h3>
+              <p class="about-premium__lead" data-i18n="about.leadNew">Я соединяю дизайн, AI и разработку в одну систему: от визуальной подачи до логики взаимодействия и автоматизации, чтобы проект был не просто красивым, а действительно полезным и измеримым.</p>
+              <div class="about-premium__grid">
+                <article class="about-mini-card">
+                  <h4 data-i18n="about.m1t">AI-решения</h4>
+                  <p data-i18n="about.m1d">Инструменты и сценарии, которые ускоряют процессы и уменьшают ручную рутину.</p>
+                </article>
+                <article class="about-mini-card">
+                  <h4 data-i18n="about.m2t">Сайты</h4>
+                  <p data-i18n="about.m2d">Продуманные интерфейсы с понятной структурой, фокусом на доверие и конверсию.</p>
+                </article>
+                <article class="about-mini-card">
+                  <h4 data-i18n="about.m3t">Видеопродакшн</h4>
+                  <p data-i18n="about.m3d">Контент, который цепляет внимание и поддерживает визуальный стиль проекта.</p>
+                </article>
+                <article class="about-mini-card">
+                  <h4 data-i18n="about.m4t">Системный подход</h4>
+                  <p data-i18n="about.m4d">От идеи до запуска: единая логика, аккуратная упаковка и рабочие интеграции.</p>
+                </article>
               </div>
-              <ul class="about__list about__list--skills section-animate">
-                <li><span class="about__list-icon icon-inline" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/><path d="M8 18h8"/></svg></span><span data-i18n="about.li1">AI-контент и генерация</span></li>
-                <li><span class="about__list-icon icon-inline" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M4 11l2-6h12l2 6"/><path d="M8 5l-1 6"/><path d="M12 5l-1 6"/><path d="M16 5l-1 6"/><line x1="4" y1="11" x2="20" y2="11"/></svg></span><span data-i18n="about.li2">Видеопродакшн</span></li>
-                <li><span class="about__list-icon icon-inline" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><polyline points="7 8 5 10 7 12"/><polyline points="17 8 19 10 17 12"/></svg></span><span data-i18n="about.li3">Сайты и лендинги</span></li>
-                <li><span class="about__list-icon icon-inline" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon fill="none" points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><span data-i18n="about.li4">Боты и автоматизация</span></li>
-              </ul>
-            </div>
-            <p class="about__footer section-animate" data-i18n="about.footer">Быстро, красиво и не бездумно — с ясной структурой, вкусом к деталям и 1&nbsp;000&nbsp;000+ просмотров на счету.</p>
-            <div class="about-stats section-animate" id="aboutStats" aria-label="Статистика">
-              <div class="about-stat">
-                <span class="about-stat__value" data-count="1000000" data-format="views">0</span>
-                <span class="about-stat__label" data-i18n="about.stat1">просмотров</span>
-              </div>
-              <div class="about-stat">
-                <span class="about-stat__value" data-count="50" data-format="plus">0</span>
-                <span class="about-stat__label" data-i18n="about.stat2">работ</span>
-              </div>
-              <div class="about-stat about-stat--static">
-                <div class="about-stat__value about-stat__value--combo">
-                  <span class="about-stat__piece" data-i18n="about.stat3a">3</span><span class="about-stat__sep" data-i18n="about.stat3mid"> в </span><span class="about-stat__piece" data-i18n="about.stat3b">1</span>
-                </div>
-                <span class="about-stat__label" data-i18n="about.stat3">AI + ВИДЕО + КОД</span>
-              </div>
+              <p class="about-premium__accent" data-i18n="about.accent">Не просто красиво — а под задачу бизнеса, с быстрым выходом в прод.</p>
             </div>
           </div>
         </div>
@@ -204,143 +200,56 @@
     </section>
 
     <section class="section section--trust" id="why" aria-labelledby="trust-why-title">
-      <div class="trust-grid">
-        <div class="trust-grid__col trust-grid__col--left">
-          <h2 class="section__title section-animate trust-grid__title" id="trust-why-title" data-i18n="trust.whyTitle">Почему ко мне идут не просто за кодом</h2>
-          <div class="why__block section-animate">
-            <p class="why__lead" data-i18n="trust.lead">Потому что я умею видеть проект целиком.</p>
-            <p class="why__text" data-i18n="trust.text">Не только как это собрать, но и как это подать, как это будет восприниматься, где человек зацепится взглядом, что запомнит, почему это будет выглядеть дороже, чем стоит.</p>
-          </div>
-          <div class="why__tags section-animate">
-            <span class="why__tag" data-i18n="trust.tag1">эстетика</span>
-            <span class="why__tag" data-i18n="trust.tag2">структура</span>
-            <span class="why__tag" data-i18n="trust.tag3">digital-мышление</span>
-            <span class="why__tag" data-i18n="trust.tag4">скорость</span>
-          </div>
-          <div class="trust-badges section-animate" aria-label="Инструменты">
-            <span class="trust-badge">ChatGPT</span>
-            <span class="trust-badge">Cursor</span>
-            <span class="trust-badge">HTML/CSS/JS</span>
-            <span class="trust-badge">React</span>
-            <span class="trust-badge">Tailwind</span>
-            <span class="trust-badge">Framer Motion</span>
-            <span class="trust-badge">Figma</span>
-            <span class="trust-badge">Tilda</span>
-            <span class="trust-badge">Webflow</span>
-            <span class="trust-badge">Telegram Bots</span>
-            <span class="trust-badge">AI tools</span>
-          </div>
-          <div class="trust-audience section-animate">
-            <h3 class="trust-audience__title" data-i18n="trust.audTitle">Кому подойдёт</h3>
-            <ul class="trust-audience__list">
-              <li data-i18n="trust.aud1">Экспертам</li>
-              <li data-i18n="trust.aud2">Креаторам</li>
-              <li data-i18n="trust.aud3">Digital-проектам</li>
-              <li data-i18n="trust.aud4">AI-продуктам</li>
-              <li data-i18n="trust.aud5">Студиям</li>
-              <li data-i18n="trust.aud6">Тем, кому нужен сайт с характером</li>
-            </ul>
-          </div>
+      <div class="container trust-shell">
+        <h2 class="section__title section-animate trust-grid__title" id="trust-why-title" data-i18n="trust.whyTitle">Почему ко мне идут не просто за кодом</h2>
+        <p class="trust-intro section-animate" data-i18n="trust.intro">Я думаю не только о сборке, но и о том, как проект выглядит, воспринимается и работает на человека.</p>
+        <div class="why-value-grid">
+          <article class="why-value-card section-animate">
+            <h3 class="why-value-card__title" data-i18n="trust.v1t">Внешний вид</h3>
+            <p class="why-value-card__text" data-i18n="trust.v1d">Проект должен сразу производить сильное впечатление. Чтобы он выглядел дороже, цеплял взгляд и запоминался, а не был просто ещё одним сайтом.</p>
+          </article>
+          <article class="why-value-card section-animate">
+            <h3 class="why-value-card__title" data-i18n="trust.v2t">Понятная структура</h3>
+            <p class="why-value-card__text" data-i18n="trust.v2d">Важно, чтобы человеку было легко ориентироваться. Куда смотреть, что читать, что нажать и почему это вообще для него важно — всё считывается быстро и естественно.</p>
+          </article>
+          <article class="why-value-card section-animate">
+            <h3 class="why-value-card__title" data-i18n="trust.v3t">Подача и восприятие</h3>
+            <p class="why-value-card__text" data-i18n="trust.v3d">Недостаточно просто сделать — важно, как это подано. Где человек зацепится взглядом, что почувствует, что запомнит и почему проект будет восприниматься сильнее конкурентов.</p>
+          </article>
+          <article class="why-value-card section-animate">
+            <h3 class="why-value-card__title" data-i18n="trust.v4t">Скорость запуска</h3>
+            <p class="why-value-card__text" data-i18n="trust.v4d">Результат должен появляться быстро, без бесконечных согласований и затягивания процесса — с ясными шагами и нормальным темпом движения к запуску.</p>
+          </article>
         </div>
+      </div>
+    </section>
 
-        <div class="trust-grid__col trust-grid__col--reviews" id="testimonials" aria-labelledby="reviews-title">
-          <div class="reviews-col__head section-animate">
-            <h2 class="reviews-col__title" id="reviews-title" data-i18n="trust.reviewsTitle">Что говорят клиенты</h2>
-            <button type="button" class="btn btn--outline reviews-col__cta" id="openReviewForm" data-i18n="trust.leaveReview">Оставить отзыв</button>
-          </div>
-          <div class="reviews-slider section-animate" id="reviewsSlider">
-            <p class="reviews-slider__hint label-mono" data-i18n="trust.reviewsHint">Всего 3 отзыва — пролистайте блок ниже.</p>
-            <div class="reviews-slider__stage" tabindex="0">
-              <button type="button" class="reviews-slider__arrow reviews-slider__arrow--prev" id="reviewsPrev" aria-label="Предыдущий отзыв">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-              </button>
-              <div class="reviews-slider__viewport" id="reviewsSliderViewport">
-              <div class="reviews-slider__track" id="reviewsSliderTrack" role="list">
-                <article class="review-card review-card--slide" role="listitem">
-                  <div class="review-card__top">
-                    <div class="review-stars" data-rating="5" aria-label="Оценка 5 из 5"></div>
-                    <blockquote class="review-card__quote">
-                      <p>
-                        Денис сделал нам чат-бота для записи пациентов. Честно — до этого думал, что ИИ это хайп и игрушки. Через неделю после запуска бот закрывал 40% обращений без участия администратора. Через месяц мы убрали одну смену на ресепшене. Окупилось за 3 недели. Жалею, что не сделал раньше.
-                      </p>
-                    </blockquote>
-                  </div>
-                  <div class="review-card__author">
-                    <img
-                      class="review-card__avatar"
-                      src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=160&h=160&fit=crop&auto=format"
-                      alt=""
-                      width="48"
-                      height="48"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div>
-                      <p class="review-card__name">Андрей В.</p>
-                      <p class="review-card__role">Клиника, администратор</p>
-                    </div>
-                  </div>
-                </article>
-                <article class="review-card review-card--slide" role="listitem">
-                  <div class="review-card__top">
-                    <div class="review-stars" data-rating="5" aria-label="Оценка 5 из 5"></div>
-                    <blockquote class="review-card__quote">
-                      <p>
-                        Нам нужен был голосовой бот для бронирования столиков. Предыдущий подрядчик два месяца рисовал презентации и ничего не сделал. Денис за 10 дней запустил рабочий прототип, за 3 недели — полную версию. Бот обрабатывает 70% звонков, гости даже не понимают, что говорят с роботом.
-                      </p>
-                    </blockquote>
-                  </div>
-                  <div class="review-card__author">
-                    <img
-                      class="review-card__avatar"
-                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&h=160&fit=crop&auto=format"
-                      alt=""
-                      width="48"
-                      height="48"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div>
-                      <p class="review-card__name">Мария Л.</p>
-                      <p class="review-card__role">Ресторан, управляющая</p>
-                    </div>
-                  </div>
-                </article>
-                <article class="review-card review-card--slide" role="listitem">
-                  <div class="review-card__top">
-                    <div class="review-stars" data-rating="5" aria-label="Оценка 5 из 5"></div>
-                    <blockquote class="review-card__quote">
-                      <p>
-                        Денис собрал ИИ-аналитика, который мониторит наши карточки на Wildberries и Ozon. Раньше я руками отслеживала позиции, отзывы, конкурентов — убивала на это 3 часа в день. Сейчас каждое утро приходит готовый отчёт с рекомендациями. Это как нанять аналитика, только он не ходит в отпуск.
-                      </p>
-                    </blockquote>
-                  </div>
-                  <div class="review-card__author">
-                    <img
-                      class="review-card__avatar"
-                      src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&auto=format"
-                      alt=""
-                      width="48"
-                      height="48"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div>
-                      <p class="review-card__name">Екатерина С.</p>
-                      <p class="review-card__role">Маркетплейсы, собственный бренд</p>
-                    </div>
-                  </div>
-                </article>
+    <section class="section section--reviews" id="testimonials" aria-labelledby="reviews-title">
+      <div class="container reviews-shell">
+        <div class="reviews-col__head section-animate">
+          <h2 class="reviews-col__title" id="reviews-title" data-i18n="trust.reviewsTitle">Что говорят клиенты</h2>
+          <button type="button" class="btn btn--outline reviews-col__cta" id="openReviewForm" data-i18n="trust.leaveReview">Оставить отзыв</button>
+        </div>
+        <div class="reviews-showcase section-animate" id="reviewsShowcase">
+          <article class="review-hero" id="reviewHeroCard">
+            <div class="review-hero__stars review-stars" id="reviewHeroStars" data-rating="5" aria-label="Оценка 5 из 5"></div>
+            <blockquote class="review-hero__quote" id="reviewHeroQuote"></blockquote>
+            <div class="review-hero__author">
+              <img class="review-hero__avatar" id="reviewHeroAvatar" alt="" width="54" height="54" loading="lazy" decoding="async" />
+              <div>
+                <p class="review-hero__name" id="reviewHeroName"></p>
+                <p class="review-hero__role" id="reviewHeroRole"></p>
               </div>
-              </div>
-              <button type="button" class="reviews-slider__arrow reviews-slider__arrow--next" id="reviewsNext" aria-label="Следующий отзыв">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-              </button>
             </div>
-            <div class="reviews-slider__footer">
-              <div class="reviews-slider__dots" id="reviewsDots" role="tablist" aria-label="Переключение отзывов"></div>
-              <span class="reviews-slider__counter label-mono" id="reviewsCounter">1 / 3</span>
+          </article>
+          <div class="reviews-mini-wrap">
+            <p class="reviews-mini-wrap__hint label-mono" id="reviewsMiniHint">9 отзывов — нажмите на карточку справа</p>
+            <div class="reviews-mini-controls">
+              <button type="button" class="reviews-mini-controls__arrow" id="reviewsMiniPrev" aria-label="Предыдущие отзывы">‹</button>
+              <div class="reviews-mini-controls__dots" id="reviewsMiniDots" role="tablist" aria-label="Страницы мини-отзывов"></div>
+              <button type="button" class="reviews-mini-controls__arrow" id="reviewsMiniNext" aria-label="Следующие отзывы">›</button>
             </div>
+            <div class="reviews-mini-grid" id="reviewsMiniGrid" role="list"></div>
           </div>
         </div>
       </div>
@@ -363,7 +272,7 @@
           <div class="contact-layout__left">
             <img
               class="contact-layout__photo"
-              src="image_work/contact-photo.png"
+              src="image_work/DenBOND_contact-photo.webp"
               alt=""
               width="800"
               height="450"
@@ -477,7 +386,12 @@
     <button type="button" class="gallery-modal__close" aria-label="Закрыть"><span aria-hidden="true">✕</span></button>
     <button type="button" class="gallery-modal__arrow gallery-modal__arrow--prev" id="galleryPrev" aria-label="Предыдущее фото">‹</button>
     <div class="gallery-modal__frame">
+      <div class="gallery-modal__meta" id="galleryMeta" hidden>
+        <h3 class="gallery-modal__title" id="galleryTitle"></h3>
+        <p class="gallery-modal__desc" id="galleryDesc"></p>
+      </div>
       <img class="gallery-modal__img" id="galleryModalImg" alt="" />
+      <div class="gallery-modal__thumbs" id="galleryThumbs" hidden></div>
       <p class="gallery-modal__counter" id="galleryCounter">1 / 1</p>
     </div>
     <button type="button" class="gallery-modal__arrow gallery-modal__arrow--next" id="galleryNext" aria-label="Следующее фото">›</button>
@@ -534,9 +448,9 @@
   });
 
   const isMobile = window.innerWidth < 768;
-  const PARTICLE_COUNT = isMobile ? 50 : 100;
-  const CONNECTION_DIST = isMobile ? 120 : 150;
-  const MOUSE_RADIUS = 180;
+  const PARTICLE_COUNT = isMobile ? 140 : 280;
+  const CONNECTION_DIST = isMobile ? 145 : 205;
+  const MOUSE_RADIUS = isMobile ? 155 : 250;
 
   let mouse = { x: -9999, y: -9999 };
 
@@ -558,13 +472,19 @@
     constructor() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.3;
-      this.vy = (Math.random() - 0.5) * 0.3;
-      this.radius = Math.random() * 1.5 + 0.8;
-      this.alpha = Math.random() * 0.3 + 0.3;
+      this.homeX = this.x;
+      this.homeY = this.y;
+      this.vx = (Math.random() - 0.5) * 0.18;
+      this.vy = (Math.random() - 0.5) * 0.18;
+      this.radius = Math.random() * 1.6 + 0.85;
+      this.alpha = Math.random() * 0.34 + 0.34;
     }
 
     update() {
+      const spring = isMobile ? 0.0017 : 0.0024;
+      this.vx += (this.homeX - this.x) * spring;
+      this.vy += (this.homeY - this.y) * spring;
+
       this.x += this.vx;
       this.y += this.vy;
 
@@ -573,32 +493,39 @@
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist < MOUSE_RADIUS && dist > 0) {
-        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
-        this.vx += (dx / dist) * force * 0.02;
-        this.vy += (dy / dist) * force * 0.02;
+        const t = 1 - dist / MOUSE_RADIUS;
+        const force = t * t;
+        const repel = isMobile ? 0.024 : 0.038;
+        this.vx += (dx / dist) * force * repel;
+        this.vy += (dy / dist) * force * repel;
       }
 
-      this.vx *= 0.99;
-      this.vy *= 0.99;
+      this.vx *= 0.958;
+      this.vy *= 0.958;
 
       const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-      if (speed > 1) {
-        this.vx = (this.vx / speed) * 1;
-        this.vy = (this.vy / speed) * 1;
+      const maxSpeed = isMobile ? 0.9 : 1.25;
+      if (speed > maxSpeed) {
+        this.vx = (this.vx / speed) * maxSpeed;
+        this.vy = (this.vy / speed) * maxSpeed;
       }
 
-      if (this.x < -20) this.x = width + 20;
-      if (this.x > width + 20) this.x = -20;
-      if (this.y < -20) this.y = height + 20;
-      if (this.y > height + 20) this.y = -20;
+      if (this.x < 0) { this.x = 0; this.vx *= -0.35; }
+      if (this.x > width) { this.x = width; this.vx *= -0.35; }
+      if (this.y < 0) { this.y = 0; this.vy *= -0.35; }
+      if (this.y > height) { this.y = height; this.vy *= -0.35; }
     }
 
     draw() {
       const tc = themeColors;
+      const mdx = this.x - mouse.x;
+      const mdy = this.y - mouse.y;
+      const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+      const hoverBoost = mdist < MOUSE_RADIUS ? 1 + (1 - mdist / MOUSE_RADIUS) * 0.75 : 1;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, this.radius * hoverBoost, 0, Math.PI * 2);
       ctx.fillStyle =
-        'rgba(' + tc.gold + ',' + this.alpha * tc.particleAlpha + ')';
+        'rgba(' + tc.gold + ',' + this.alpha * tc.particleAlpha * hoverBoost + ')';
       ctx.fill();
     }
   }
@@ -617,12 +544,18 @@
 
         if (dist < CONNECTION_DIST) {
           const opacity = 1 - dist / CONNECTION_DIST;
+          const mx = (particles[i].x + particles[j].x) * 0.5;
+          const my = (particles[i].y + particles[j].y) * 0.5;
+          const mdx = mx - mouse.x;
+          const mdy = my - mouse.y;
+          const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+          const hoverBoost = mdist < MOUSE_RADIUS ? 1 + (1 - mdist / MOUSE_RADIUS) * 1.05 : 1;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
           ctx.strokeStyle =
-            'rgba(' + tc.gold + ',' + opacity * tc.connectionAlpha + ')';
-          ctx.lineWidth = 0.5;
+            'rgba(' + tc.gold + ',' + opacity * tc.connectionAlpha * hoverBoost + ')';
+          ctx.lineWidth = 0.45 * hoverBoost;
           ctx.stroke();
         }
       }

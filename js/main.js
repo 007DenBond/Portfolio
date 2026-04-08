@@ -237,13 +237,17 @@
     });
   }
 
-  var galleryModalState = { urls: [], index: 0 };
+  var galleryModalState = { urls: [], index: 0, title: "", desc: "" };
   var videoModalEl = null;
 
   function initGalleryModal() {
     var modal = document.getElementById("galleryModal");
     var imgEl = document.getElementById("galleryModalImg");
     var counterEl = document.getElementById("galleryCounter");
+    var thumbsEl = document.getElementById("galleryThumbs");
+    var metaEl = document.getElementById("galleryMeta");
+    var titleEl = document.getElementById("galleryTitle");
+    var descEl = document.getElementById("galleryDesc");
     var backdrop = modal ? modal.querySelector(".gallery-modal__backdrop") : null;
     var closeBtn = modal ? modal.querySelector(".gallery-modal__close") : null;
     var prevBtn = document.getElementById("galleryPrev");
@@ -267,12 +271,53 @@
         show();
       }
       if (counterEl) counterEl.textContent = i + 1 + " / " + urls.length;
+      if (thumbsEl) {
+        var allThumbs = thumbsEl.querySelectorAll(".gallery-modal__thumb");
+        for (var ti = 0; ti < allThumbs.length; ti++) {
+          allThumbs[ti].classList.toggle("is-active", ti === i);
+        }
+      }
     }
 
-    function openGallery(urls, startIndex) {
+    function renderThumbs(urls) {
+      if (!thumbsEl) return;
+      thumbsEl.innerHTML = "";
+      if (!urls || urls.length <= 1) {
+        thumbsEl.setAttribute("hidden", "");
+        return;
+      }
+      urls.forEach(function (u, thumbIndex) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "gallery-modal__thumb";
+        btn.setAttribute("aria-label", "Фото " + (thumbIndex + 1));
+        var im = document.createElement("img");
+        im.src = u;
+        im.alt = "";
+        im.loading = "lazy";
+        btn.appendChild(im);
+        btn.addEventListener("click", function () {
+          galleryModalState.index = thumbIndex;
+          updateImg();
+        });
+        thumbsEl.appendChild(btn);
+      });
+      thumbsEl.removeAttribute("hidden");
+    }
+
+    function openGallery(urls, startIndex, meta) {
       if (!urls || !urls.length) return;
       galleryModalState.urls = urls;
       galleryModalState.index = Math.max(0, Math.min(startIndex || 0, urls.length - 1));
+      galleryModalState.title = meta && meta.title ? meta.title : "";
+      galleryModalState.desc = meta && meta.desc ? meta.desc : "";
+      if (metaEl && titleEl && descEl) {
+        titleEl.textContent = galleryModalState.title;
+        descEl.textContent = galleryModalState.desc;
+        if (galleryModalState.title || galleryModalState.desc) metaEl.removeAttribute("hidden");
+        else metaEl.setAttribute("hidden", "");
+      }
+      renderThumbs(urls);
       modal.removeAttribute("hidden");
       modal.style.opacity = "0";
       body.style.overflow = "hidden";
@@ -291,7 +336,18 @@
       imgEl.removeAttribute("src");
       imgEl.style.opacity = "";
       imgEl.style.transition = "";
+      if (thumbsEl) {
+        thumbsEl.innerHTML = "";
+        thumbsEl.setAttribute("hidden", "");
+      }
+      if (metaEl) {
+        metaEl.setAttribute("hidden", "");
+      }
+      if (titleEl) titleEl.textContent = "";
+      if (descEl) descEl.textContent = "";
       galleryModalState.urls = [];
+      galleryModalState.title = "";
+      galleryModalState.desc = "";
       body.style.overflow = "";
     }
 
@@ -460,154 +516,228 @@
   }
 
   function initReviewsSlider() {
-    var root = document.getElementById("reviewsSlider");
-    var viewport = document.getElementById("reviewsSliderViewport");
-    var track = document.getElementById("reviewsSliderTrack");
-    var stage = root ? root.querySelector(".reviews-slider__stage") : null;
-    var prevBtn = document.getElementById("reviewsPrev");
-    var nextBtn = document.getElementById("reviewsNext");
-    var dotsWrap = document.getElementById("reviewsDots");
-    var counterEl = document.getElementById("reviewsCounter");
-    if (!root || !viewport || !track) return;
-    var slides = track.querySelectorAll(".review-card--slide");
-    var n = slides.length;
-    if (!n) return;
+    var root = document.getElementById("reviewsShowcase");
+    var heroQuote = document.getElementById("reviewHeroQuote");
+    var heroName = document.getElementById("reviewHeroName");
+    var heroRole = document.getElementById("reviewHeroRole");
+    var heroAvatar = document.getElementById("reviewHeroAvatar");
+    var heroStars = document.getElementById("reviewHeroStars");
+    var miniGrid = document.getElementById("reviewsMiniGrid");
+    var miniHint = document.getElementById("reviewsMiniHint");
+    var miniPrev = document.getElementById("reviewsMiniPrev");
+    var miniNext = document.getElementById("reviewsMiniNext");
+    var miniDots = document.getElementById("reviewsMiniDots");
+    if (!root || !heroQuote || !heroName || !heroRole || !heroAvatar || !heroStars || !miniGrid) return;
 
-    var idx = 0;
-    var timer = null;
-    var intervalMs = 6500;
-    var inView = false;
-    var hoverPause = false;
-    var dotButtons = [];
+    var items = [
+      {
+        rating: 5,
+        quote:
+          "Денис сделал нам чат-бота для записи пациентов. Через неделю после запуска бот закрывал 40% обращений без участия администратора. Через месяц мы убрали одну смену на ресепшене.",
+        name: "Андрей В.",
+        role: "Клиника, администратор",
+        avatar:
+          "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "За 10 дней получили рабочий прототип, за 3 недели — полную версию. Бот обрабатывает большую часть звонков, и команда перестала тонуть в рутине.",
+        name: "Мария Л.",
+        role: "Ресторан, управляющая",
+        avatar:
+          "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "ИИ-аналитика для маркетплейсов сняла с нас 3 часа ручной работы в день. Каждое утро получаем готовый отчёт и понятные действия.",
+        name: "Екатерина С.",
+        role: "Маркетплейсы, собственный бренд",
+        avatar:
+          "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "Личный бренд запустили быстро и без бесконечных правок. Сайт выглядит дороже рынка и с первого экрана вызывает доверие.",
+        name: "Игорь К.",
+        role: "Эксперт, консалтинг",
+        avatar:
+          "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "Получили не просто лендинг, а внятную структуру пути клиента. Конверсия выросла почти вдвое без увеличения рекламного бюджета.",
+        name: "Ольга Н.",
+        role: "Онлайн-школа, продюсер",
+        avatar:
+          "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "Проект шёл в нормальном темпе: чёткие шаги, без затягивания. Через три недели уже вели трафик на готовую посадку.",
+        name: "Руслан П.",
+        role: "Сервисный бизнес, сооснователь",
+        avatar:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "Под премиальный продукт получили спокойный, дорогой визуал. Клиенты прямо отмечают, что сайт выглядит уверенно и внушает доверие.",
+        name: "Лилия Т.",
+        role: "Бьюти-бренд, основатель",
+        avatar:
+          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "Дизайн, логика и интеграции собраны в одну систему. Команда перестала терять лиды и быстрее закрывает запросы.",
+        name: "Сергей М.",
+        role: "B2B, отдел продаж",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&auto=format",
+      },
+      {
+        rating: 5,
+        quote:
+          "Всё объяснено по-человечески: что делаем, зачем и какой будет эффект. Результат — красивый сайт, который реально продаёт.",
+        name: "Анна Р.",
+        role: "Образовательный проект",
+        avatar:
+          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=160&h=160&fit=crop&auto=format",
+      },
+    ];
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      root.classList.add("reviews-slider--static");
-      track.classList.add("reviews-slider__track--static");
-      var hintEl = root.querySelector(".reviews-slider__hint");
-      if (hintEl) {
-        hintEl.textContent =
-          "Отзывов: " + n + " — пролистайте блок ниже.";
-      }
-      return;
+    var active = 0;
+    var miniPage = 0;
+    var autoTimer = null;
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function setHero(item) {
+      heroStars.setAttribute("data-rating", String(item.rating));
+      heroStars.setAttribute("aria-label", "Оценка " + item.rating + " из 5");
+      heroQuote.textContent = item.quote;
+      heroName.textContent = item.name;
+      heroRole.textContent = item.role;
+      heroAvatar.src = item.avatar;
+      heroAvatar.alt = item.name;
+      initReviewStars();
     }
 
-    function applyTransform() {
-      var h = viewport.offsetHeight;
-      if (h < 8) return;
-      track.style.transform = "translateY(" + -idx * h + "px)";
+    function getPool() {
+      return items.filter(function (_, i) {
+        return i !== active;
+      });
     }
 
-    function updateUI() {
-      if (counterEl) counterEl.textContent = idx + 1 + " / " + n;
-      for (var d = 0; d < dotButtons.length; d++) {
-        dotButtons[d].classList.toggle("is-active", d === idx);
-        dotButtons[d].setAttribute("aria-selected", d === idx ? "true" : "false");
-      }
+    function getMiniPageCount() {
+      return Math.max(1, Math.ceil(getPool().length / 4));
     }
 
-    function goTo(i) {
-      idx = ((i % n) + n) % n;
-      applyTransform();
-      updateUI();
-      syncTimer();
+    function getMiniItems() {
+      var pool = getPool();
+      var pageCount = getMiniPageCount();
+      if (miniPage >= pageCount) miniPage = 0;
+      var start = miniPage * 4;
+      return pool.slice(start, start + 4);
     }
 
-    function metrics() {
-      var h = viewport.offsetHeight;
-      if (h < 8) return;
-      for (var i = 0; i < n; i++) {
-        slides[i].style.height = h + "px";
-      }
-      track.style.height = n * h + "px";
-      applyTransform();
-    }
-
-    function syncTimer() {
-      if (timer) {
-        window.clearInterval(timer);
-        timer = null;
-      }
-      if (!inView || hoverPause) return;
-      timer = window.setInterval(function () {
-        goTo(idx + 1);
-      }, intervalMs);
-    }
-
-    track.style.transition = "transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)";
-
-    if (dotsWrap) {
-      for (var di = 0; di < n; di++) {
-        (function (j) {
-          var b = document.createElement("button");
-          b.type = "button";
-          b.className = "reviews-slider__dot" + (j === 0 ? " is-active" : "");
-          b.setAttribute("role", "tab");
-          b.setAttribute("aria-label", "Отзыв " + (j + 1) + " из " + n);
-          b.setAttribute("aria-selected", j === 0 ? "true" : "false");
-          b.addEventListener("click", function () {
-            goTo(j);
+    function renderMiniDots() {
+      if (!miniDots) return;
+      miniDots.innerHTML = "";
+      var pageCount = getMiniPageCount();
+      for (var i = 0; i < pageCount; i++) {
+        (function (dotIdx) {
+          var dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "reviews-mini-controls__dot" + (dotIdx === miniPage ? " is-active" : "");
+          dot.setAttribute("aria-label", "Страница " + (dotIdx + 1));
+          dot.addEventListener("click", function () {
+            miniPage = dotIdx;
+            renderMini();
           });
-          dotsWrap.appendChild(b);
-          dotButtons.push(b);
-        })(di);
+          miniDots.appendChild(dot);
+        })(i);
       }
     }
 
-    if (prevBtn) prevBtn.addEventListener("click", function () { goTo(idx - 1); });
-    if (nextBtn) nextBtn.addEventListener("click", function () { goTo(idx + 1); });
-
-    if (stage) {
-      stage.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          goTo(idx - 1);
-        } else if (e.key === "ArrowRight") {
-          e.preventDefault();
-          goTo(idx + 1);
-        }
+    function renderMini() {
+      miniGrid.innerHTML = "";
+      var miniItems = getMiniItems();
+      miniItems.forEach(function (item) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "review-mini";
+        btn.setAttribute("role", "listitem");
+        btn.setAttribute("aria-label", "Показать отзыв: " + item.name);
+        var shortTxt = item.quote.length > 130 ? item.quote.slice(0, 130).trim() + "…" : item.quote;
+        btn.innerHTML =
+          '<p class="review-mini__text">' +
+          shortTxt +
+          '</p><div class="review-mini__meta"><span class="review-mini__name">' +
+          item.name +
+          '</span><span class="review-mini__role">' +
+          item.role +
+          "</span></div>";
+        btn.addEventListener("click", function () {
+          active = items.indexOf(item);
+          miniPage = 0;
+          sync();
+          restartAuto();
+        });
+        miniGrid.appendChild(btn);
       });
+      if (miniHint) {
+        miniHint.textContent = items.length + " отзывов — выберите карточку или листайте страницы";
+      }
+      renderMiniDots();
     }
 
-    root.setAttribute("role", "region");
-    root.setAttribute("aria-label", "Отзывы клиентов, карусель");
+    function sync() {
+      setHero(items[active]);
+      renderMini();
+    }
 
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          inView = entry.isIntersecting;
-          syncTimer();
-        });
-      },
-      { root: null, rootMargin: "0px 0px -5% 0px", threshold: 0.12 }
-    );
-    io.observe(root);
+    function restartAuto() {
+      if (reduceMotion) return;
+      if (autoTimer) window.clearInterval(autoTimer);
+      autoTimer = window.setInterval(function () {
+        active = (active + 1) % items.length;
+        miniPage = 0;
+        sync();
+      }, 7000);
+    }
 
-    viewport.addEventListener("mouseenter", function () {
-      hoverPause = true;
-      syncTimer();
+    sync();
+    restartAuto();
+    root.addEventListener("mouseenter", function () {
+      if (autoTimer) window.clearInterval(autoTimer);
+      autoTimer = null;
     });
-    viewport.addEventListener("mouseleave", function () {
-      hoverPause = false;
-      syncTimer();
+    root.addEventListener("mouseleave", function () {
+      restartAuto();
     });
-
-    window.addEventListener(
-      "resize",
-      function () {
-        metrics();
-        updateUI();
-      },
-      { passive: true }
-    );
-
-    metrics();
-    updateUI();
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        metrics();
-        updateUI();
+    if (miniPrev) {
+      miniPrev.addEventListener("click", function () {
+        var count = getMiniPageCount();
+        miniPage = (miniPage - 1 + count) % count;
+        renderMini();
+        restartAuto();
       });
-    });
+    }
+    if (miniNext) {
+      miniNext.addEventListener("click", function () {
+        var count = getMiniPageCount();
+        miniPage = (miniPage + 1) % count;
+        renderMini();
+        restartAuto();
+      });
+    }
   }
 
   function initReviewFormModal() {
@@ -726,31 +856,30 @@
       id: 1,
       category: "ai-content",
       kind: "image",
-      thumb: "image_work/ai-movitra-ice.png",
+      thumb: "image_work/DenBOND_ai-movitra-ice.webp",
       gallery: [
-        "image_work/ai-movitra-ice.png",
-        "image_work/ai-cartier.jpg",
-        "image_work/photo4.jpg",
-        "image_work/photo4.png",
-        "image_work/photo2.jpg",
-        "image_work/photo1.jpg",
+        "image_work/DenBOND_ai-movitra-ice.webp",
+        "image_work/DenBOND_ai-cartier.webp",
+        "image_work/DenBOND_photo4-.webp",
+        "image_work/DenBOND_photo4.webp",
+        "image_work/DenBOND_photo2.webp",
       ],
-      galleryPhotoCount: 6,
+      galleryPhotoCount: 5,
     },
     {
       id: 2,
       category: "ai-content",
       kind: "image",
-      thumb: "image_work/ai-maslenitsa.jpg",
-      gallery: ["image_work/ai-maslenitsa.jpg", "image_work/photo3.jpg", "image_work/photo5.jpg"],
+      thumb: "image_work/DenBOND_ai-maslenitsa.webp",
+      gallery: ["image_work/DenBOND_ai-maslenitsa.webp", "image_work/DenBOND_photo3.webp", "image_work/DenBOND_photo5.webp"],
       galleryPhotoCount: 3,
     },
     {
       id: 3,
       category: "ai-content",
       kind: "image",
-      thumb: "image_work/ai-timessquare.png",
-      gallery: ["image_work/ai-timessquare.png", "image_work/photo6.jpg", "image_work/ai-glasses-table.jpg"],
+      thumb: "image_work/DenBOND_ai-timessquare.webp",
+      gallery: ["image_work/DenBOND_ai-timessquare.webp", "image_work/DenBOND_photo6.webp", "image_work/DenBOND_ai-glasses-table.webp"],
       galleryPhotoCount: 3,
     },
     {
@@ -791,26 +920,32 @@
       video: "video_work/reel6.mp4",
     },
     {
+      id: 14,
+      category: "video",
+      kind: "video",
+      video: "video_work/reel7.mp4",
+    },
+    {
       id: 10,
       category: "development",
       kind: "image",
-      thumb: "image_work/bot-screen.jpg",
-      gallery: ["image_work/bot-screen.jpg"],
+      thumb: "image_work/DenBOND_bot-screen.webp",
+      gallery: ["image_work/DenBOND_bot-screen.webp"],
     },
     {
       id: 11,
       category: "marketplaces",
       kind: "image",
-      thumb: "image_work/wb-shirt-result.png",
-      gallery: ["image_work/wb-shirt-result.png", "image_work/photo1.png", "image_work/photo3.png"],
-      galleryPhotoCount: 3,
+      thumb: "image_work/DenBOND_wb-shirt-result.webp",
+      gallery: ["image_work/DenBOND_wb-shirt-result.webp", "image_work/DenBOND_photo1.webp"],
+      galleryPhotoCount: 2,
     },
     {
       id: 12,
       category: "development",
       kind: "image",
-      thumb: "image_work/portfolio.png",
-      gallery: ["image_work/portfolio.png"],
+      thumb: "image_work/DenBOND_portfolio.webp",
+      gallery: ["image_work/DenBOND_portfolio.webp"],
     },
     {
       id: 13,
@@ -869,6 +1004,8 @@
       var vid = card.querySelector(".portfolio-card__video");
       var playIc = card.querySelector(".portfolio-card__play");
       if (!vid) return;
+      vid.muted = true;
+      vid.defaultMuted = true;
 
       function playIconVisible(on) {
         if (!playIc) return;
@@ -923,6 +1060,7 @@
               var all = document.querySelectorAll(".portfolio-card__video");
               for (var i = 0; i < all.length; i++) {
                 if (all[i] !== vid) {
+                  all[i].muted = true;
                   all[i].pause();
                   try {
                     all[i].currentTime = 0.1;
@@ -990,6 +1128,8 @@
         v.setAttribute("loop", "");
         v.setAttribute("playsinline", "");
         v.setAttribute("preload", "metadata");
+        v.muted = true;
+        v.defaultMuted = true;
         v.src = item.video;
         media.appendChild(v);
         var play = document.createElement("div");
@@ -1049,7 +1189,10 @@
           return;
         }
         if (item.gallery && item.gallery.length && window.openGalleryModal) {
-          window.openGalleryModal(item.gallery, 0);
+          window.openGalleryModal(item.gallery, 0, {
+            title: copy.title || "",
+            desc: copy.desc || "",
+          });
         } else if (item.video && window.openVideoModal) {
           window.openVideoModal(item.video);
         }

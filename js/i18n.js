@@ -25,6 +25,19 @@
       about: {
         titleBefore: "Я не просто пишу код — я собираю ",
         titleHi: "впечатление",
+        eyebrow: "AI · WEB · AUTOMATION",
+        headline: "Делаю цифровые продукты, которые выглядят дороже и работают под бизнес-результат",
+        leadNew:
+          "Я соединяю дизайн, AI и разработку в одну систему: от визуальной подачи до логики взаимодействия и автоматизации, чтобы проект был не просто красивым, а действительно полезным и измеримым.",
+        m1t: "AI-решения",
+        m1d: "Инструменты и сценарии, которые ускоряют процессы и уменьшают ручную рутину.",
+        m2t: "Сайты",
+        m2d: "Продуманные интерфейсы с понятной структурой, фокусом на доверие и конверсию.",
+        m3t: "Видеопродакшн",
+        m3d: "Контент, который цепляет внимание и поддерживает визуальный стиль проекта.",
+        m4t: "Системный подход",
+        m4d: "От идеи до запуска: единая логика, аккуратная упаковка и рабочие интеграции.",
+        accent: "Не просто красиво — а под задачу бизнеса, с быстрым выходом в прод.",
         lead: "Создаю AI-контент рекламного качества. Снимаю и монтирую видео — один из моих рилсов набрал 1\u00A0000\u00A0000+ просмотров. Разрабатываю Telegram-ботов и сайты.",
         li1: "AI-контент и генерация",
         li2: "Видеопродакшн",
@@ -91,21 +104,22 @@
       },
       trust: {
         whyTitle: "Почему ко мне идут не просто за кодом",
-        lead: "Потому что я умею видеть проект целиком.",
-        text: "Не только как это собрать, но и как это подать, как это будет восприниматься, где человек зацепится взглядом, что запомнит, почему это будет выглядеть дороже, чем стоит.",
-        tag1: "эстетика",
-        tag2: "структура",
-        tag3: "digital-мышление",
-        tag4: "скорость",
-        audTitle: "Кому подойдёт",
-        aud1: "Экспертам",
-        aud2: "Креаторам",
-        aud3: "Digital-проектам",
-        aud4: "AI-продуктам",
-        aud5: "Студиям",
-        aud6: "Тем, кому нужен сайт с характером",
+        intro:
+          "Я думаю не только о сборке, но и о том, как проект выглядит, воспринимается и работает на человека.",
+        v1t: "Внешний вид",
+        v1d:
+          "Проект должен сразу производить сильное впечатление. Чтобы он выглядел дороже, цеплял взгляд и запоминался, а не был просто ещё одним сайтом.",
+        v2t: "Понятная структура",
+        v2d:
+          "Важно, чтобы человеку было легко ориентироваться. Куда смотреть, что читать, что нажать и почему это вообще для него важно — всё считывается быстро и естественно.",
+        v3t: "Подача и восприятие",
+        v3d:
+          "Недостаточно просто сделать — важно, как это подано. Где человек зацепится взглядом, что почувствует, что запомнит и почему проект будет восприниматься сильнее конкурентов.",
+        v4t: "Скорость запуска",
+        v4d:
+          "Результат должен появляться быстро, без бесконечных согласований и затягивания процесса — с ясными шагами и нормальным темпом движения к запуску.",
         reviewsTitle: "Что говорят клиенты",
-        reviewsHint: "Всего 3 отзыва — пролистайте блок ниже.",
+        reviewsHint: "9 отзывов — пролистайте влево или вправо.",
         leaveReview: "Оставить отзыв",
       },
       reviews: {
@@ -149,6 +163,19 @@
       about: {
         titleBefore: "I don't just write code — I craft an ",
         titleHi: "impression",
+        eyebrow: "AI · WEB · AUTOMATION",
+        headline: "I build digital products that look premium and work for business outcomes",
+        leadNew:
+          "I combine design, AI, and development into one system: from visual storytelling to interaction logic and automation, so the project is not just beautiful, but truly useful and measurable.",
+        m1t: "AI solutions",
+        m1d: "Tools and workflows that speed up processes and reduce manual routine.",
+        m2t: "Websites",
+        m2d: "Structured interfaces focused on trust, clarity, and conversion.",
+        m3t: "Video production",
+        m3d: "Content that captures attention and supports your brand language.",
+        m4t: "System approach",
+        m4d: "From idea to launch: one logic, clear packaging, and working integrations.",
+        accent: "Not just beautiful — built for business goals and fast launch.",
         lead: "I create ad-quality AI content. I shoot and edit video — one of my reels hit 1,000,000+ views. I build Telegram bots and websites.",
         li1: "AI Content & Generation",
         li2: "Video Production",
@@ -217,21 +244,22 @@
       },
       trust: {
         whyTitle: "Why people come for more than code",
-        lead: "Because I see the whole project.",
-        text: "Not only how to build it, but how to present it, how it will be perceived, what catches the eye, what sticks, and why it can look more valuable than it costs.",
-        tag1: "aesthetics",
-        tag2: "structure",
-        tag3: "digital thinking",
-        tag4: "speed",
-        audTitle: "Who it's for",
-        aud1: "Experts",
-        aud2: "Creators",
-        aud3: "Digital projects",
-        aud4: "AI products",
-        aud5: "Studios",
-        aud6: "Anyone who wants a site with character",
+        intro:
+          "I think not only about implementation, but about how the project looks, is perceived, and works for people.",
+        v1t: "Visual impact",
+        v1d:
+          "A project should make a strong first impression. It should look premium, catch attention, and stay memorable instead of feeling like just another site.",
+        v2t: "Clear structure",
+        v2d:
+          "People should instantly understand where to look, what to read, what to click, and why it matters to them.",
+        v3t: "Presentation and perception",
+        v3d:
+          "It's not enough to build it — the delivery matters. What grabs attention, what users feel, what they remember, and why your project feels stronger than competitors.",
+        v4t: "Launch speed",
+        v4d:
+          "Results should come fast, without endless approvals and delays — with clear steps and real momentum toward launch.",
         reviewsTitle: "What clients say",
-        reviewsHint: "Three reviews — scroll the block below.",
+        reviewsHint: "9 reviews — swipe left or right.",
         leaveReview: "Leave a review",
       },
       reviews: {
@@ -323,6 +351,11 @@
         "2 days → 10 seconds. Manual calculation replaced with instant file upload. Result: −16 hours per week.",
       tag: "Python · Automation · Excel · Telegram Bot",
     },
+    14: {
+      title: "Short-form Video",
+      desc: "Engaging reel with dynamic editing and premium visual rhythm",
+      tag: "Video Production",
+    },
   };
 
   var portfolioCardRu = {
@@ -391,6 +424,11 @@
       desc:
         "2 дня → 10 секунд. Раньше подсчёт вели вручную — теперь загружаешь файл и получаешь результат мгновенно. Результат: −16 часов в неделю.",
       tag: "Python · Автоматизация · Excel · Telegram Bot",
+    },
+    14: {
+      title: "Короткий видео-формат",
+      desc: "Динамичный рилс с акцентным монтажом и премиальной подачей",
+      tag: "Видеопродакшн",
     },
   };
 
