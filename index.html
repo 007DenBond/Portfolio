@@ -31,18 +31,20 @@
         <a href="#testimonials" data-i18n="nav.testimonials">Отзывы</a>
       </nav>
       <div class="nav__actions">
-        <div class="lang-switch" id="langSwitch" role="group" aria-label="Язык">
-          <button type="button" class="lang-switch__btn is-active" data-lang="ru">RU</button>
-          <button type="button" class="lang-switch__btn" data-lang="en">EN</button>
+        <div class="nav__cluster-start">
+          <div class="lang-switch" id="langSwitch" role="group" aria-label="Язык">
+            <button type="button" class="lang-switch__btn is-active" data-lang="ru">RU</button>
+            <button type="button" class="lang-switch__btn" data-lang="en">EN</button>
+          </div>
+          <button type="button" class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+            <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+            <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </span>
+          </button>
         </div>
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-          <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </span>
-          <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-          </span>
-        </button>
         <a href="#contact" class="nav__cta btn btn--primary" data-i18n="nav.contact">Связаться</a>
         <button type="button" class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
           <span></span><span></span><span></span>
