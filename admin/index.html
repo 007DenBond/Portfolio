@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Админка Бонда...</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 20px;
+    }
+    .panel {
+      max-width: 1220px;
+      margin: 0 auto;
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      border-radius: 14px;
+      background: rgba(15, 15, 15, 0.95);
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+    h1 { margin: 0 0 10px; font-size: 24px; color: #f3d787; }
+    .hidden { display: none !important; }
+    input, textarea, button {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      background: #141414;
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    button {
+      cursor: pointer;
+      background: linear-gradient(135deg, #f0cf6a, #d4af37);
+      border-color: rgba(212, 175, 55, 0.8);
+      color: #101010;
+      font-weight: 600;
+    }
+    .btn-ghost {
+      width: auto;
+      background: #171717;
+      color: #e7c86f;
+      border-color: rgba(212, 175, 55, 0.45);
+    }
+    .btn-danger {
+      width: auto;
+      background: #3a1717;
+      color: #ffd6d6;
+      border-color: rgba(186, 74, 74, 0.85);
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status--published { background: rgba(40, 150, 60, 0.26); color: #a4e6b1; }
+    .status--hidden { background: rgba(130, 130, 130, 0.26); color: #d2d2d2; }
+    .note { font-size: 13px; color: rgba(255, 255, 255, 0.7); margin-bottom: 10px; min-height: 18px; }
+    .tabs {
+      display: inline-flex;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+    .tab-btn {
+      width: auto;
+      background: #171717;
+      color: rgba(255, 255, 255, 0.78);
+      border-color: rgba(255, 255, 255, 0.2);
+      padding: 8px 12px;
+    }
+    .tab-btn.is-active {
+      color: #101010;
+      border-color: rgba(212, 175, 55, 0.8);
+      background: linear-gradient(135deg, #f0cf6a, #d4af37);
+    }
+    .field-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.72);
+      margin: 0 0 5px;
+      display: block;
+    }
+    .table-wrap { overflow: auto; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; min-width: 1040px; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); vertical-align: top; text-align: left; font-size: 13px; }
+    th { color: #f3d787; font-weight: 600; background: rgba(212, 175, 55, 0.06); }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background: #111;
+      display: block;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .actions button { width: auto; padding: 7px 10px; font-size: 12px; }
+    .login { max-width: 380px; margin: 0 auto; display: grid; gap: 8px; }
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0, 0, 0, 0.72);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+    .modal__panel {
+      width: min(620px, 100%);
+      background: #111;
+      border: 1px solid rgba(212, 175, 55, 0.32);
+      border-radius: 12px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stars { display: flex; gap: 6px; }
+    .star-btn {
+      width: auto;
+      border: none;
+      background: transparent;
+      color: rgba(212, 175, 55, 0.36);
+      font-size: 24px;
+      padding: 0;
+      line-height: 1;
+    }
+    .star-btn.is-on { color: #d4af37; }
+    .reply-box { display: grid; gap: 8px; }
+    .reply-box textarea { min-height: 70px; }
+    .works-panel {
+      margin-top: 18px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+      padding-top: 14px;
+    }
+    .works-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .works-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 12px;
+    }
+    .works-box {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(18, 18, 18, 0.92);
+      padding: 10px;
+    }
+    .works-list {
+      display: grid;
+      gap: 8px;
+      max-height: 360px;
+      overflow: auto;
+    }
+    .work-item {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(13, 13, 13, 0.9);
+    }
+    .work-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 7px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.34);
+      background: #101010;
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 10px;
+    }
+    .work-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .work-meta {
+      display: grid;
+      gap: 3px;
+      font-size: 12px;
+    }
+    .work-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .work-actions button {
+      width: auto;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+    .works-form {
+      display: grid;
+      gap: 8px;
+    }
+    .works-form .row-2 select,
+    .works-form .row-2 input {
+      width: 100%;
+    }
+    .contacts-panel .works-box {
+      max-width: 760px;
+    }
+    .contacts-form {
+      display: grid;
+      gap: 12px;
+    }
+    @media (max-width: 980px) {
+      .works-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 760px) {
+      .row-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <section id="loginView">
+      <h1>Вход в админку Бонда...</h1>
+      <form id="loginForm" class="login">
+        <input type="text" name="login" placeholder="Логин" required />
+        <input type="password" name="password" placeholder="Пароль" required />
+        <button type="submit">Войти</button>
+      </form>
+      <p id="loginError" class="note"></p>
+    </section>
+
+    <section id="adminView" class="hidden">
+      <div class="top">
+        <h1>Админка БОНДА...</h1>
+        <button id="logoutBtn" class="btn-ghost" type="button">Выйти</button>
+      </div>
+      <p id="notice" class="note"></p>
+
+      <div class="tabs">
+        <button id="tabWorks" class="tab-btn" type="button">Карточки работ</button>
+        <button id="tabReviews" class="tab-btn is-active" type="button">Отзывы</button>
+        <button id="tabContacts" class="tab-btn" type="button">Контакты</button>
+      </div>
+
+      <section id="reviewsPanel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Фото</th>
+                <th>Имя</th>
+                <th>Текст отзыва</th>
+                <th>Рейтинг</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="worksPanel" class="works-panel hidden">
+        <div class="works-head">
+          <h1 style="margin:0;font-size:21px;color:#f3d787">Карточки работ</h1>
+          <button id="worksReloadBtn" class="btn-ghost" type="button">Обновить список</button>
+        </div>
+        <div class="works-grid">
+          <div class="works-box">
+            <h3 style="margin:0 0 8px;color:#f3d787">Добавить карточку</h3>
+            <form id="worksCreateForm" class="works-form">
+              <div class="row-2">
+                <div>
+                  <label class="field-label" for="workI18nKey">Ключ (i18nKey)</label>
+                  <input type="number" id="workI18nKey" placeholder="Например: 15" required />
+                </div>
+                <div>
+                  <label class="field-label" for="workCategory">Категория</label>
+                  <input type="text" id="workCategory" placeholder="Например: development" required />
+                </div>
+              </div>
+              <div class="row-2">
+                <div>
+                  <label class="field-label" for="workKind">Тип медиа</label>
+                  <select id="workKind">
+                    <option value="image">image</option>
+                    <option value="video">video</option>
+                    <option value="reel">reel</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label" for="workMediaPath">Путь к файлу</label>
+                  <input type="text" id="workMediaPath" placeholder="image_work/..." required />
+                </div>
+              </div>
+              <div class="row-2">
+                <div>
+                  <label class="field-label" for="workUploadFile">Загрузить файл</label>
+                  <input type="file" id="workUploadFile" accept="image/*" />
+                </div>
+                <div style="display:flex;align-items:end">
+                  <button id="workUploadBtn" class="btn-ghost" type="button">Загрузить файл</button>
+                </div>
+              </div>
+              <button type="submit">Добавить карточку</button>
+            </form>
+          </div>
+          <div class="works-box">
+            <h3 style="margin:0 0 8px;color:#f3d787">Список карточек</h3>
+            <div id="worksList" class="works-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contactsPanel" class="works-panel contacts-panel hidden">
+        <div class="works-head">
+          <h1 style="margin:0;font-size:21px;color:#f3d787">Контакты</h1>
+        </div>
+        <div class="works-grid">
+          <div class="works-box">
+            <h3 style="margin:0 0 8px;color:#f3d787">Редактировать контакты</h3>
+            <form id="contactsForm" class="contacts-form">
+              <div>
+                <label class="field-label" for="contactEmail">Email</label>
+                <input id="contactEmail" type="email" placeholder="name@example.com" />
+              </div>
+              <div>
+                <label class="field-label" for="contactPhone">Телефон</label>
+                <input id="contactPhone" type="text" placeholder="+7 (999) 000-00-00" />
+              </div>
+              <div>
+                <label class="field-label" for="contactTelegramNick">Telegram (ник)</label>
+                <input id="contactTelegramNick" type="text" placeholder="@username" />
+              </div>
+              <div>
+                <label class="field-label" for="contactGitHub">GitHub (ссылка)</label>
+                <input id="contactGitHub" type="url" placeholder="https://github.com/username" />
+              </div>
+              <div>
+                <label class="field-label" for="contactInstagram">Instagram (ссылка)</label>
+                <input id="contactInstagram" type="url" placeholder="https://instagram.com/username" />
+              </div>
+              <div>
+                <label class="field-label" for="contactBehance">Behance (ссылка)</label>
+                <input id="contactBehance" type="url" placeholder="https://behance.net/username" />
+              </div>
+              <div>
+                <label class="field-label" for="contactDribbble">Dribbble (ссылка)</label>
+                <input id="contactDribbble" type="url" placeholder="https://dribbble.com/username" />
+              </div>
+              <button type="submit">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="editModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal__panel">
+      <h3 style="margin:0;color:#f3d787">Редактировать отзыв</h3>
+      <input id="editName" placeholder="Имя автора" />
+      <input id="editRole" placeholder="Должность / компания" />
+      <textarea id="editQuote" placeholder="Текст отзыва"></textarea>
+      <div>
+        <div style="margin-bottom:6px;font-size:13px;color:rgba(255,255,255,0.72)">Рейтинг</div>
+        <div class="stars" id="ratingStars"></div>
+      </div>
+      <div class="row-2">
+        <div>
+          <input type="file" id="editPhotoFile" accept="image/*" />
+          <button id="uploadPhotoBtn" class="btn-ghost" type="button" style="margin-top:8px">Загрузить фото</button>
+        </div>
+        <div>
+          <input id="editAvatar" placeholder="Путь фото" />
+          <img id="editAvatarPreview" class="avatar" alt="" style="margin-top:8px" />
+        </div>
+      </div>
+      <div class="row-2">
+        <button id="saveEditBtn" type="button">Сохранить</button>
+        <button id="cancelEditBtn" class="btn-ghost" type="button">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="replyModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal__panel">
+      <h3 style="margin:0;color:#f3d787">Ответить на отзыв</h3>
+      <div class="reply-box">
+        <textarea id="replyText" placeholder="Введите ответ"></textarea>
+        <div class="row-2">
+          <button id="saveReplyBtn" type="button">Сохранить ответ</button>
+          <button id="cancelReplyBtn" class="btn-ghost" type="button">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="workEditModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal__panel">
+      <h3 style="margin:0;color:#f3d787">Редактировать карточку</h3>
+      <div>
+        <label class="field-label" for="workEditTitle">Название</label>
+        <input id="workEditTitle" type="text" placeholder="Название карточки (из переводов)" />
+      </div>
+      <div>
+        <label class="field-label" for="workEditDescription">Описание</label>
+        <textarea id="workEditDescription" placeholder="Описание карточки (из переводов)"></textarea>
+      </div>
+      <div class="row-2">
+        <div>
+          <label class="field-label" for="workEditI18nKey">Ключ (i18nKey)</label>
+          <input id="workEditI18nKey" type="number" placeholder="i18nKey" />
+        </div>
+        <div>
+          <label class="field-label" for="workEditCategory">Категория</label>
+          <input id="workEditCategory" type="text" placeholder="category" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div>
+          <label class="field-label" for="workEditKind">Тип медиа</label>
+          <select id="workEditKind">
+            <option value="image">image</option>
+            <option value="video">video</option>
+            <option value="reel">reel</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="workEditMediaPath">Путь к файлу</label>
+          <input id="workEditMediaPath" type="text" placeholder="Путь media" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div>
+          <label class="field-label" for="workEditUploadFile">Загрузить файл</label>
+          <input id="workEditUploadFile" type="file" accept="image/*" />
+        </div>
+        <div style="display:flex;align-items:end">
+          <button id="workEditUploadBtn" class="btn-ghost" type="button">Загрузить файл</button>
+        </div>
+      </div>
+      <div class="row-2">
+        <button id="workEditSaveBtn" type="button">Сохранить</button>
+        <button id="workEditCancelBtn" class="btn-ghost" type="button">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var loginView = document.getElementById("loginView");
+      var adminView = document.getElementById("adminView");
+      var loginForm = document.getElementById("loginForm");
+      var loginError = document.getElementById("loginError");
+      var logoutBtn = document.getElementById("logoutBtn");
+      var tabWorks = document.getElementById("tabWorks");
+      var tabReviews = document.getElementById("tabReviews");
+      var tabContacts = document.getElementById("tabContacts");
+      var reviewsPanel = document.getElementById("reviewsPanel");
+      var reviewsBody = document.getElementById("reviewsBody");
+      var notice = document.getElementById("notice");
+
+      var editModal = document.getElementById("editModal");
+      var editName = document.getElementById("editName");
+      var editRole = document.getElementById("editRole");
+      var editQuote = document.getElementById("editQuote");
+      var editAvatar = document.getElementById("editAvatar");
+      var editAvatarPreview = document.getElementById("editAvatarPreview");
+      var editPhotoFile = document.getElementById("editPhotoFile");
+      var uploadPhotoBtn = document.getElementById("uploadPhotoBtn");
+      var saveEditBtn = document.getElementById("saveEditBtn");
+      var cancelEditBtn = document.getElementById("cancelEditBtn");
+      var ratingStars = document.getElementById("ratingStars");
+
+      var replyModal = document.getElementById("replyModal");
+      var replyText = document.getElementById("replyText");
+      var saveReplyBtn = document.getElementById("saveReplyBtn");
+      var cancelReplyBtn = document.getElementById("cancelReplyBtn");
+      var worksPanel = document.getElementById("worksPanel");
+      var worksReloadBtn = document.getElementById("worksReloadBtn");
+      var worksCreateForm = document.getElementById("worksCreateForm");
+      var workI18nKey = document.getElementById("workI18nKey");
+      var workCategory = document.getElementById("workCategory");
+      var workKind = document.getElementById("workKind");
+      var workMediaPath = document.getElementById("workMediaPath");
+      var workUploadFile = document.getElementById("workUploadFile");
+      var workUploadBtn = document.getElementById("workUploadBtn");
+      var worksList = document.getElementById("worksList");
+      var workEditModal = document.getElementById("workEditModal");
+      var workEditI18nKey = document.getElementById("workEditI18nKey");
+      var workEditCategory = document.getElementById("workEditCategory");
+      var workEditKind = document.getElementById("workEditKind");
+      var workEditMediaPath = document.getElementById("workEditMediaPath");
+      var workEditTitle = document.getElementById("workEditTitle");
+      var workEditDescription = document.getElementById("workEditDescription");
+      var workEditUploadFile = document.getElementById("workEditUploadFile");
+      var workEditUploadBtn = document.getElementById("workEditUploadBtn");
+      var workEditSaveBtn = document.getElementById("workEditSaveBtn");
+      var workEditCancelBtn = document.getElementById("workEditCancelBtn");
+      var contactsPanel = document.getElementById("contactsPanel");
+      var contactsForm = document.getElementById("contactsForm");
+      var contactEmail = document.getElementById("contactEmail");
+      var contactPhone = document.getElementById("contactPhone");
+      var contactTelegramNick = document.getElementById("contactTelegramNick");
+      var contactGitHub = document.getElementById("contactGitHub");
+      var contactInstagram = document.getElementById("contactInstagram");
+      var contactBehance = document.getElementById("contactBehance");
+      var contactDribbble = document.getElementById("contactDribbble");
+
+      var list = [];
+      var works = [];
+      var editId = null;
+      var replyId = null;
+      var editRating = 5;
+      var workEditId = null;
+
+      function esc(v) {
+        return String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      function setNotice(msg) {
+        notice.textContent = msg || "";
+      }
+
+      function renderStars() {
+        ratingStars.innerHTML = "";
+        for (var i = 1; i <= 5; i++) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "star-btn" + (i <= editRating ? " is-on" : "");
+          b.textContent = "★";
+          (function (r) {
+            b.addEventListener("click", function () {
+              editRating = r;
+              renderStars();
+            });
+          })(i);
+          ratingStars.appendChild(b);
+        }
+      }
+
+      function setAuthed() {
+        loginView.classList.add("hidden");
+        adminView.classList.remove("hidden");
+        switchTab("reviews");
+        loadReviews();
+        loadWorks();
+        loadContacts();
+      }
+
+      function switchTab(target) {
+        var isWorks = target === "works";
+        var isContacts = target === "contacts";
+        if (isContacts) loadContacts();
+        worksPanel.classList.toggle("hidden", !isWorks);
+        reviewsPanel.classList.toggle("hidden", isWorks || isContacts);
+        contactsPanel.classList.toggle("hidden", !isContacts);
+        tabWorks.classList.toggle("is-active", isWorks);
+        tabReviews.classList.toggle("is-active", !isWorks && !isContacts);
+        tabContacts.classList.toggle("is-active", isContacts);
+      }
+
+      function setGuest() {
+        adminView.classList.add("hidden");
+        loginView.classList.remove("hidden");
+      }
+
+      async function checkAuth() {
+        try {
+          var res = await fetch("/api/auth/me", { credentials: "same-origin" });
+          if (!res.ok) return setGuest();
+          setAuthed();
+        } catch (_e) {
+          setGuest();
+        }
+      }
+
+      function statusBadge(status) {
+        var cls = status === "hidden" ? "status status--hidden" : "status status--published";
+        var txt = status === "hidden" ? "Скрыт" : "Опубликован";
+        return '<span class="' + cls + '">' + txt + "</span>";
+      }
+
+      function renderTable() {
+        if (!list.length) {
+          reviewsBody.innerHTML = "<tr><td colspan='7'>Пока нет отзывов</td></tr>";
+          return;
+        }
+        reviewsBody.innerHTML = list
+          .map(function (it) {
+            var stars = "★★★★★".slice(0, Math.max(1, Math.min(5, Number(it.rating) || 5)));
+            var actions =
+              '<div class="actions">' +
+              '<button class="btn-ghost" data-edit="' + it.id + '">✏️ Редактировать</button>' +
+              '<button class="btn-ghost" data-reply="' + it.id + '">💬 Ответить</button>' +
+              '<button class="btn-ghost" data-toggle="' + it.id + '">' + (it.status === "hidden" ? "👁️ Показать" : "👁️ Скрыть") + "</button>" +
+              '<button class="btn-ghost" data-pin="' + it.id + '">📌 Закрепить</button>' +
+              '<button class="btn-danger" data-del="' + it.id + '">🗑️ Удалить</button>' +
+              "</div>";
+            return (
+              "<tr>" +
+              "<td><img class='avatar' src='" + esc(it.avatar || "") + "' alt=''></td>" +
+              "<td>" + esc(it.name) + "<div style='opacity:.7;font-size:12px;margin-top:3px'>" + esc(it.role || "") + "</div></td>" +
+              "<td>" + esc(it.quote || "") + (it.reply ? "<div style='margin-top:6px;color:#f3d787'>💬 " + esc(it.reply) + "</div>" : "") + "</td>" +
+              "<td style='color:#d4af37'>" + stars + "</td>" +
+              "<td>" + statusBadge(it.status) + "</td>" +
+              "<td>" + esc(it.date || "") + "</td>" +
+              "<td>" + actions + "</td>" +
+              "</tr>"
+            );
+          })
+          .join("");
+      }
+
+      async function loadReviews() {
+        try {
+          var res = await fetch("/api/reviews", { credentials: "same-origin" });
+          var data = await res.json();
+          list = Array.isArray(data) ? data : [];
+          renderTable();
+          setNotice("");
+        } catch (_e) {
+          setNotice("Не удалось загрузить отзывы");
+        }
+      }
+
+      function normalizeWorkKind(kind) {
+        return kind === "reel" ? "video" : kind;
+      }
+
+      function workPreviewPath(item) {
+        if (item.kind === "video") return item.video || "";
+        return item.thumb || (Array.isArray(item.gallery) && item.gallery[0]) || "";
+      }
+
+      function renderWorks() {
+        if (!works.length) {
+          worksList.innerHTML = "<div class='note'>Карточек пока нет</div>";
+          return;
+        }
+        worksList.innerHTML = works
+          .map(function (it) {
+            var media = workPreviewPath(it);
+            var thumb = media
+              ? "<img src='/" + esc(media) + "' alt=''>"
+              : "<span>media</span>";
+            return (
+              "<article class='work-item'>" +
+              "<div class='work-thumb'>" + thumb + "</div>" +
+              "<div class='work-meta'>" +
+              "<div><strong>" + esc(it.i18nKey || it.id) + "</strong></div>" +
+              "<div><strong>category:</strong> " + esc(it.category || "-") + "</div>" +
+              "<div><strong>kind:</strong> " + esc(it.kind || "-") + "</div>" +
+              "<div class='work-actions'>" +
+              "<button class='btn-ghost' data-work-edit='" + esc(it.id) + "' type='button'>Редактировать</button>" +
+              "<button class='btn-danger' data-work-del='" + esc(it.id) + "' type='button'>Удалить</button>" +
+              "</div>" +
+              "</div>" +
+              "</article>"
+            );
+          })
+          .join("");
+      }
+
+      async function loadWorks() {
+        try {
+          var res = await fetch("/api/works", { credentials: "same-origin" });
+          var data = await res.json();
+          works = Array.isArray(data) ? data : [];
+          renderWorks();
+        } catch (_e) {
+          worksList.innerHTML = "<div class='note'>Не удалось загрузить карточки</div>";
+        }
+      }
+
+      function fillContacts(data) {
+        contactEmail.value = data.email || "";
+        contactPhone.value = data.phone || "";
+        contactTelegramNick.value = data.telegramNick || "";
+        contactGitHub.value = data.githubUrl || "";
+        contactInstagram.value = data.instagramUrl || "";
+        contactBehance.value = data.behanceUrl || "";
+        contactDribbble.value = data.dribbbleUrl || "";
+      }
+
+      async function loadContacts() {
+        try {
+          var res = await fetch("/api/admin/contacts", { credentials: "same-origin" });
+          var payload = await res.json();
+          if (!res.ok || !payload.ok || !payload.contacts) {
+            setNotice("Не удалось загрузить контакты");
+            return;
+          }
+          fillContacts(payload.contacts);
+        } catch (_e) {
+          setNotice("Не удалось загрузить контакты");
+        }
+      }
+
+      async function uploadWorkFile(fileInput, destinationInput) {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) {
+          setNotice("Выберите файл для загрузки");
+          return false;
+        }
+        var fd = new FormData();
+        fd.append("file", file);
+        var res = await fetch("/api/upload/image", {
+          method: "POST",
+          credentials: "same-origin",
+          body: fd,
+        });
+        var data = await res.json();
+        if (!res.ok || !data.ok) {
+          setNotice("Ошибка загрузки файла");
+          return false;
+        }
+        destinationInput.value = data.path;
+        setNotice("Файл загружен: " + data.path);
+        fileInput.value = "";
+        return true;
+      }
+
+      function openWorkEdit(item) {
+        workEditId = item.id;
+        workEditI18nKey.value = item.i18nKey || item.id || "";
+        workEditCategory.value = item.category || "";
+        workEditKind.value = item.kind || "image";
+        workEditMediaPath.value = workPreviewPath(item);
+        workEditTitle.value = "";
+        workEditDescription.value = "";
+        if (workEditI18nKey.value) {
+          fetch("/api/admin/translations/" + encodeURIComponent(workEditI18nKey.value), {
+            credentials: "same-origin",
+          })
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (data) {
+              if (!data || !data.ok) return;
+              workEditTitle.value = data.title || "";
+              workEditDescription.value = data.description || "";
+            })
+            .catch(function () {});
+        }
+        workEditModal.classList.remove("hidden");
+      }
+
+      function closeWorkEdit() {
+        workEditId = null;
+        workEditModal.classList.add("hidden");
+      }
+
+      function openEdit(item) {
+        editId = item.id;
+        editName.value = item.name || "";
+        editRole.value = item.role || "";
+        editQuote.value = item.quote || "";
+        editAvatar.value = item.avatar || "";
+        editRating = Number(item.rating) || 5;
+        renderStars();
+        editAvatarPreview.src = item.avatar || "";
+        editModal.classList.remove("hidden");
+      }
+
+      function closeEdit() {
+        editId = null;
+        editModal.classList.add("hidden");
+      }
+
+      function openReply(item) {
+        replyId = item.id;
+        replyText.value = item.reply || "";
+        replyModal.classList.remove("hidden");
+      }
+
+      function closeReply() {
+        replyId = null;
+        replyModal.classList.add("hidden");
+      }
+
+      reviewsBody.addEventListener("click", async function (e) {
+        var edit = e.target.closest("[data-edit]");
+        if (edit) {
+          var id = Number(edit.getAttribute("data-edit"));
+          var item = list.find(function (x) { return Number(x.id) === id; });
+          if (item) openEdit(item);
+          return;
+        }
+
+        var reply = e.target.closest("[data-reply]");
+        if (reply) {
+          var rid = Number(reply.getAttribute("data-reply"));
+          var rItem = list.find(function (x) { return Number(x.id) === rid; });
+          if (rItem) openReply(rItem);
+          return;
+        }
+
+        var tog = e.target.closest("[data-toggle]");
+        if (tog) {
+          var tid = Number(tog.getAttribute("data-toggle"));
+          var tItem = list.find(function (x) { return Number(x.id) === tid; });
+          if (!tItem) return;
+          var nextStatus = tItem.status === "hidden" ? "published" : "hidden";
+          await fetch("/api/reviews/" + tid, {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: nextStatus }),
+          });
+          loadReviews();
+          return;
+        }
+
+        var pin = e.target.closest("[data-pin]");
+        if (pin) {
+          var pid = Number(pin.getAttribute("data-pin"));
+          await Promise.all(
+            list.map(function (it) {
+              return fetch("/api/reviews/" + it.id, {
+                method: "PUT",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pinned: Number(it.id) === pid }),
+              });
+            })
+          );
+          setNotice("Отзыв закреплен");
+          loadReviews();
+          return;
+        }
+
+        var del = e.target.closest("[data-del]");
+        if (del) {
+          var did = Number(del.getAttribute("data-del"));
+          if (!window.confirm("Вы уверены?")) return;
+          await fetch("/api/reviews/" + did, { method: "DELETE", credentials: "same-origin" });
+          setNotice("Отзыв удален");
+          loadReviews();
+        }
+      });
+
+      uploadPhotoBtn.addEventListener("click", async function () {
+        var file = editPhotoFile.files && editPhotoFile.files[0];
+        if (!file) return setNotice("Выберите фото для загрузки");
+        var fd = new FormData();
+        fd.append("file", file);
+        var res = await fetch("/api/upload/image", {
+          method: "POST",
+          credentials: "same-origin",
+          body: fd,
+        });
+        var data = await res.json();
+        if (!res.ok || !data.ok) return setNotice("Ошибка загрузки фото");
+        editAvatar.value = data.path;
+        editAvatarPreview.src = "/" + data.path;
+        setNotice("Фото загружено");
+      });
+
+      saveEditBtn.addEventListener("click", async function () {
+        if (!editId) return;
+        var payload = {
+          name: editName.value.trim(),
+          role: editRole.value.trim(),
+          quote: editQuote.value.trim(),
+          rating: editRating,
+          avatar: editAvatar.value.trim(),
+        };
+        await fetch("/api/reviews/" + editId, {
+          method: "PUT",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        closeEdit();
+        setNotice("Отзыв сохранен");
+        loadReviews();
+      });
+
+      cancelEditBtn.addEventListener("click", closeEdit);
+      editAvatar.addEventListener("input", function () {
+        editAvatarPreview.src = editAvatar.value.trim();
+      });
+
+      saveReplyBtn.addEventListener("click", async function () {
+        if (!replyId) return;
+        await fetch("/api/reviews/" + replyId, {
+          method: "PUT",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reply: replyText.value.trim() }),
+        });
+        closeReply();
+        setNotice("Ответ сохранен");
+        loadReviews();
+      });
+      cancelReplyBtn.addEventListener("click", closeReply);
+
+      worksReloadBtn.addEventListener("click", function () {
+        loadWorks();
+      });
+
+      workUploadBtn.addEventListener("click", function () {
+        uploadWorkFile(workUploadFile, workMediaPath);
+      });
+
+      worksCreateForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var payload = {
+          i18nKey: Number(workI18nKey.value) || undefined,
+          category: workCategory.value.trim(),
+          kind: normalizeWorkKind(workKind.value),
+        };
+        var media = workMediaPath.value.trim();
+        if (payload.kind === "video") payload.video = media;
+        else payload.thumb = media;
+
+        var res = await fetch("/api/works", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          setNotice("Не удалось добавить карточку");
+          return;
+        }
+        worksCreateForm.reset();
+        setNotice("Карточка добавлена");
+        loadWorks();
+      });
+
+      worksList.addEventListener("click", async function (e) {
+        var editBtn = e.target.closest("[data-work-edit]");
+        if (editBtn) {
+          var editId = Number(editBtn.getAttribute("data-work-edit"));
+          var item = works.find(function (it) { return Number(it.id) === editId; });
+          if (item) openWorkEdit(item);
+          return;
+        }
+
+        var delBtn = e.target.closest("[data-work-del]");
+        if (delBtn) {
+          var delId = Number(delBtn.getAttribute("data-work-del"));
+          if (!window.confirm("Удалить карточку?")) return;
+          var delRes = await fetch("/api/works/" + delId, {
+            method: "DELETE",
+            credentials: "same-origin",
+          });
+          if (delRes.ok) {
+            setNotice("Карточка удалена");
+            loadWorks();
+          } else {
+            setNotice("Не удалось удалить карточку");
+          }
+        }
+      });
+
+      workEditUploadBtn.addEventListener("click", function () {
+        uploadWorkFile(workEditUploadFile, workEditMediaPath);
+      });
+
+      workEditSaveBtn.addEventListener("click", async function () {
+        if (!workEditId) return;
+        var i18nKey = Number(workEditI18nKey.value) || undefined;
+        var payload = {
+          i18nKey: i18nKey,
+          category: workEditCategory.value.trim(),
+          kind: normalizeWorkKind(workEditKind.value),
+        };
+        var media = workEditMediaPath.value.trim();
+        if (payload.kind === "video") payload.video = media;
+        else payload.thumb = media;
+        var res = await fetch("/api/works/" + workEditId, {
+          method: "PUT",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          if (i18nKey) {
+            await fetch("/api/admin/translations/" + encodeURIComponent(i18nKey), {
+              method: "PUT",
+              credentials: "same-origin",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title: workEditTitle.value.trim(),
+                description: workEditDescription.value.trim(),
+              }),
+            });
+          }
+          setNotice("Карточка сохранена");
+          closeWorkEdit();
+          loadWorks();
+        } else {
+          setNotice("Не удалось сохранить карточку");
+        }
+      });
+
+      workEditCancelBtn.addEventListener("click", closeWorkEdit);
+      tabWorks.addEventListener("click", function () { switchTab("works"); });
+      tabReviews.addEventListener("click", function () { switchTab("reviews"); });
+      tabContacts.addEventListener("click", function () { switchTab("contacts"); });
+
+      contactsForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var payload = {
+          email: contactEmail.value.trim(),
+          phone: contactPhone.value.trim(),
+          telegramNick: contactTelegramNick.value.trim(),
+          githubUrl: contactGitHub.value.trim(),
+          instagramUrl: contactInstagram.value.trim(),
+          behanceUrl: contactBehance.value.trim(),
+          dribbbleUrl: contactDribbble.value.trim(),
+        };
+        var res = await fetch("/api/admin/contacts", {
+          method: "PUT",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        var data = await res.json();
+        if (!res.ok || !data.ok) {
+          setNotice("Не удалось сохранить контакты");
+          return;
+        }
+        fillContacts(data.contacts || payload);
+        setNotice("Контакты сохранены");
+      });
+
+      loginForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        loginError.textContent = "";
+        var fd = new FormData(loginForm);
+        var res = await fetch("/api/auth/login", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ login: fd.get("login"), password: fd.get("password") }),
+        });
+        var data = await res.json();
+        if (!res.ok || !data.ok) {
+          loginError.textContent = (data && data.error) || "Ошибка входа";
+          return;
+        }
+        setAuthed();
+      });
+
+      logoutBtn.addEventListener("click", async function () {
+        await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+        setGuest();
+      });
+
+      checkAuth();
+    })();
+  </script>
+</body>
+</html>
