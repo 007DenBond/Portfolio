@@ -229,6 +229,47 @@
       display: grid;
       gap: 12px;
     }
+    .work-gallery-editor {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(212, 175, 55, 0.3);
+      display: grid;
+      gap: 10px;
+    }
+    .work-gallery-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .work-gallery-list {
+      display: grid;
+      gap: 8px;
+      max-height: 180px;
+      overflow: auto;
+    }
+    .work-gallery-item {
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 6px;
+      background: rgba(255,255,255,0.03);
+    }
+    .work-gallery-item img {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(0,0,0,0.2);
+    }
+    .work-gallery-path {
+      font-size: 12px;
+      opacity: 0.8;
+      word-break: break-all;
+    }
     @media (max-width: 980px) {
       .works-grid {
         grid-template-columns: 1fr;
@@ -262,6 +303,7 @@
         <button id="tabWorks" class="tab-btn" type="button">Карточки работ</button>
         <button id="tabReviews" class="tab-btn is-active" type="button">Отзывы</button>
         <button id="tabContacts" class="tab-btn" type="button">Контакты</button>
+        <button id="tabLeads" class="tab-btn" type="button">Заявки</button>
       </div>
 
       <section id="reviewsPanel">
@@ -294,25 +336,27 @@
             <form id="worksCreateForm" class="works-form">
               <div class="row-2">
                 <div>
-                  <label class="field-label" for="workI18nKey">Ключ (i18nKey)</label>
-                  <input type="number" id="workI18nKey" placeholder="Например: 15" required />
+                  <label class="field-label" for="workTitle">Название</label>
+                  <input type="text" id="workTitle" placeholder="Название работы" required />
                 </div>
                 <div>
                   <label class="field-label" for="workCategory">Категория</label>
-                  <input type="text" id="workCategory" placeholder="Например: development" required />
+                  <select id="workCategory">
+                    <option value="video">Видеопродакшн</option>
+                    <option value="ai-content">AI-контент</option>
+                    <option value="development">Разработка</option>
+                    <option value="bots">Боты</option>
+                    <option value="marketplaces">Маркетплейсы</option>
+                  </select>
                 </div>
+              </div>
+              <div>
+                <label class="field-label" for="workDescription">Описание</label>
+                <textarea id="workDescription" placeholder="Описание работы"></textarea>
               </div>
               <div class="row-2">
                 <div>
-                  <label class="field-label" for="workKind">Тип медиа</label>
-                  <select id="workKind">
-                    <option value="image">image</option>
-                    <option value="video">video</option>
-                    <option value="reel">reel</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="field-label" for="workMediaPath">Путь к файлу</label>
+                  <label class="field-label" for="workMediaPath">Фото (путь)</label>
                   <input type="text" id="workMediaPath" placeholder="image_work/..." required />
                 </div>
               </div>
@@ -376,6 +420,27 @@
           </div>
         </div>
       </section>
+      <section id="leadsPanel" class="works-panel hidden">
+        <div class="works-head">
+          <h1 style="margin:0;font-size:21px;color:#f3d787">Заявки</h1>
+          <button id="downloadLeadsCsvBtn" class="btn-ghost" type="button">Скачать CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Телефон</th>
+                <th>Сообщение</th>
+                <th>Дата</th>
+              </tr>
+            </thead>
+            <tbody id="leadsBody"></tbody>
+          </table>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -432,27 +497,23 @@
       </div>
       <div class="row-2">
         <div>
-          <label class="field-label" for="workEditI18nKey">Ключ (i18nKey)</label>
-          <input id="workEditI18nKey" type="number" placeholder="i18nKey" />
+          <label class="field-label" for="workEditI18nKey">ID</label>
+          <input id="workEditI18nKey" type="number" placeholder="id" readonly />
         </div>
         <div>
           <label class="field-label" for="workEditCategory">Категория</label>
-          <input id="workEditCategory" type="text" placeholder="category" />
-        </div>
-      </div>
-      <div class="row-2">
-        <div>
-          <label class="field-label" for="workEditKind">Тип медиа</label>
-          <select id="workEditKind">
-            <option value="image">image</option>
-            <option value="video">video</option>
-            <option value="reel">reel</option>
+          <select id="workEditCategory">
+            <option value="video">Видеопродакшн</option>
+            <option value="ai-content">AI-контент</option>
+            <option value="development">Разработка</option>
+            <option value="bots">Боты</option>
+            <option value="marketplaces">Маркетплейсы</option>
           </select>
         </div>
-        <div>
-          <label class="field-label" for="workEditMediaPath">Путь к файлу</label>
-          <input id="workEditMediaPath" type="text" placeholder="Путь media" />
-        </div>
+      </div>
+      <div>
+        <label class="field-label" for="workEditMediaPath">Путь к фото</label>
+        <input id="workEditMediaPath" type="text" placeholder="image_work/..." />
       </div>
       <div class="row-2">
         <div>
@@ -462,6 +523,14 @@
         <div style="display:flex;align-items:end">
           <button id="workEditUploadBtn" class="btn-ghost" type="button">Загрузить файл</button>
         </div>
+      </div>
+      <div class="work-gallery-editor">
+        <div class="field-label">Фото внутри карточки</div>
+        <div class="work-gallery-row">
+          <input id="workEditGalleryInput" type="text" placeholder="image_work/filename.webp" />
+          <button id="workEditGalleryAddBtn" class="btn-ghost" type="button">Добавить фото</button>
+        </div>
+        <div id="workEditGalleryList" class="work-gallery-list"></div>
       </div>
       <div class="row-2">
         <button id="workEditSaveBtn" type="button">Сохранить</button>
@@ -480,6 +549,7 @@
       var tabWorks = document.getElementById("tabWorks");
       var tabReviews = document.getElementById("tabReviews");
       var tabContacts = document.getElementById("tabContacts");
+      var tabLeads = document.getElementById("tabLeads");
       var reviewsPanel = document.getElementById("reviewsPanel");
       var reviewsBody = document.getElementById("reviewsBody");
       var notice = document.getElementById("notice");
@@ -503,9 +573,9 @@
       var worksPanel = document.getElementById("worksPanel");
       var worksReloadBtn = document.getElementById("worksReloadBtn");
       var worksCreateForm = document.getElementById("worksCreateForm");
-      var workI18nKey = document.getElementById("workI18nKey");
+      var workTitle = document.getElementById("workTitle");
+      var workDescription = document.getElementById("workDescription");
       var workCategory = document.getElementById("workCategory");
-      var workKind = document.getElementById("workKind");
       var workMediaPath = document.getElementById("workMediaPath");
       var workUploadFile = document.getElementById("workUploadFile");
       var workUploadBtn = document.getElementById("workUploadBtn");
@@ -513,7 +583,6 @@
       var workEditModal = document.getElementById("workEditModal");
       var workEditI18nKey = document.getElementById("workEditI18nKey");
       var workEditCategory = document.getElementById("workEditCategory");
-      var workEditKind = document.getElementById("workEditKind");
       var workEditMediaPath = document.getElementById("workEditMediaPath");
       var workEditTitle = document.getElementById("workEditTitle");
       var workEditDescription = document.getElementById("workEditDescription");
@@ -521,7 +590,13 @@
       var workEditUploadBtn = document.getElementById("workEditUploadBtn");
       var workEditSaveBtn = document.getElementById("workEditSaveBtn");
       var workEditCancelBtn = document.getElementById("workEditCancelBtn");
+      var workEditGalleryInput = document.getElementById("workEditGalleryInput");
+      var workEditGalleryAddBtn = document.getElementById("workEditGalleryAddBtn");
+      var workEditGalleryList = document.getElementById("workEditGalleryList");
       var contactsPanel = document.getElementById("contactsPanel");
+      var leadsPanel = document.getElementById("leadsPanel");
+      var leadsBody = document.getElementById("leadsBody");
+      var downloadLeadsCsvBtn = document.getElementById("downloadLeadsCsvBtn");
       var contactsForm = document.getElementById("contactsForm");
       var contactEmail = document.getElementById("contactEmail");
       var contactPhone = document.getElementById("contactPhone");
@@ -533,10 +608,31 @@
 
       var list = [];
       var works = [];
+      var leads = [];
+      var FALLBACK_WORKS = [
+        { id: 1, title: "AI кампания для MOVITRA", description: "Серия визуалов и креативов.", photo: "image_work/DenBOND_ai-movitra-ice.webp", category: "ai-content" },
+        { id: 2, title: "AI визуал для бренда", description: "Концепты для social media.", photo: "image_work/DenBOND_ai-maslenitsa.webp", category: "ai-content" },
+        { id: 3, title: "AI креатив Times Square", description: "Digital-outdoor стиль.", photo: "image_work/DenBOND_ai-timessquare.webp", category: "ai-content" },
+        { id: 4, title: "Портфолио-сайт", description: "Разработка сайта-портфолио.", photo: "image_work/DenBOND_portfolio.webp", category: "development" },
+        { id: 5, title: "Telegram-бот", description: "Автоматизация заявок и сценарии.", photo: "image_work/DenBOND_bot-screen.webp", category: "bots" },
+        { id: 6, title: "Карточка маркетплейса", description: "Оформление карточки товара.", photo: "image_work/DenBOND_wb-shirt-result.webp", category: "marketplaces" }
+      ];
+      var FALLBACK_REVIEWS = [
+        { id: 1, name: "Андрей В.", role: "Клиника, администратор", quote: "Денис сделал нам чат-бота для записи пациентов. Через неделю после запуска бот закрывал 40% обращений без участия администратора.", rating: 5, avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-01-12" },
+        { id: 2, name: "Мария Л.", role: "Ресторан, управляющая", quote: "За 10 дней получили рабочий прототип, за 3 недели — полную версию. Бот обрабатывает большую часть звонков.", rating: 5, avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-01-28" },
+        { id: 3, name: "Екатерина С.", role: "Маркетплейсы, собственный бренд", quote: "ИИ-аналитика сняла с нас 3 часа ручной работы в день.", rating: 5, avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: true, date: "2026-02-06" },
+        { id: 4, name: "Игорь К.", role: "Эксперт, консалтинг", quote: "Личный бренд запустили быстро и без бесконечных правок. Сайт выглядит дороже рынка.", rating: 5, avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-02-18" },
+        { id: 5, name: "Ольга Н.", role: "Онлайн-школа, продюсер", quote: "Получили не просто лендинг, а внятную структуру пути клиента.", rating: 5, avatar: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-02-26" },
+        { id: 6, name: "Руслан П.", role: "Сервисный бизнес, сооснователь", quote: "Четкие шаги и быстрый запуск без затягивания.", rating: 5, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-03-01" },
+        { id: 7, name: "Лилия Т.", role: "Бьюти-бренд, основатель", quote: "Получили спокойный премиальный визуал, который внушает доверие.", rating: 5, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-03-09" },
+        { id: 8, name: "Сергей М.", role: "B2B, отдел продаж", quote: "Команда перестала терять лиды и быстрее закрывает запросы.", rating: 5, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-03-15" },
+        { id: 9, name: "Анна Р.", role: "Образовательный проект", quote: "Красивый сайт, который реально продает.", rating: 5, avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=160&h=160&fit=crop&auto=format", status: "published", reply: "", pinned: false, date: "2026-03-21" }
+      ];
       var editId = null;
       var replyId = null;
       var editRating = 5;
       var workEditId = null;
+      var workEditGallery = [];
 
       function esc(v) {
         return String(v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -544,6 +640,26 @@
 
       function setNotice(msg) {
         notice.textContent = msg || "";
+      }
+
+      function getAuthToken() {
+        try {
+          return (
+            localStorage.getItem("token") ||
+            localStorage.getItem("authToken") ||
+            localStorage.getItem("accessToken") ||
+            ""
+          );
+        } catch (_e) {
+          return "";
+        }
+      }
+
+      function withAuthHeaders(baseHeaders) {
+        var headers = Object.assign({}, baseHeaders || {});
+        var token = getAuthToken();
+        if (token) headers.Authorization = "Bearer " + token;
+        return headers;
       }
 
       function renderStars() {
@@ -570,18 +686,22 @@
         loadReviews();
         loadWorks();
         loadContacts();
+        loadLeads();
       }
 
       function switchTab(target) {
         var isWorks = target === "works";
         var isContacts = target === "contacts";
+        var isLeads = target === "leads";
         if (isContacts) loadContacts();
         worksPanel.classList.toggle("hidden", !isWorks);
-        reviewsPanel.classList.toggle("hidden", isWorks || isContacts);
+        reviewsPanel.classList.toggle("hidden", isWorks || isContacts || isLeads);
         contactsPanel.classList.toggle("hidden", !isContacts);
+        leadsPanel.classList.toggle("hidden", !isLeads);
         tabWorks.classList.toggle("is-active", isWorks);
-        tabReviews.classList.toggle("is-active", !isWorks && !isContacts);
+        tabReviews.classList.toggle("is-active", !isWorks && !isContacts && !isLeads);
         tabContacts.classList.toggle("is-active", isContacts);
+        tabLeads.classList.toggle("is-active", isLeads);
       }
 
       function setGuest() {
@@ -639,22 +759,56 @@
       async function loadReviews() {
         try {
           var res = await fetch("/api/reviews", { credentials: "same-origin" });
+          if (!res.ok) throw new Error("reviews unavailable");
           var data = await res.json();
-          list = Array.isArray(data) ? data : [];
+          list = Array.isArray(data) && data.length ? data : FALLBACK_REVIEWS.slice();
           renderTable();
           setNotice("");
         } catch (_e) {
-          setNotice("Не удалось загрузить отзывы");
+          list = FALLBACK_REVIEWS.slice();
+          renderTable();
+          setNotice("API отзывов недоступен — показаны локальные данные");
         }
       }
 
-      function normalizeWorkKind(kind) {
-        return kind === "reel" ? "video" : kind;
+      function workPreviewPath(item) {
+        return item.photo || item.thumb || (Array.isArray(item.gallery) && item.gallery[0]) || "";
       }
 
-      function workPreviewPath(item) {
-        if (item.kind === "video") return item.video || "";
-        return item.thumb || (Array.isArray(item.gallery) && item.gallery[0]) || "";
+      function getWorkGallery(item) {
+        var g = Array.isArray(item.gallery) ? item.gallery.filter(Boolean) : [];
+        if (!g.length && (item.photo || item.thumb)) g = [item.photo || item.thumb];
+        return g;
+      }
+
+      function categoryLabel(value) {
+        var map = {
+          "video": "Видеопродакшн",
+          "ai-content": "AI-контент",
+          "development": "Разработка",
+          "bots": "Боты",
+          "marketplaces": "Маркетплейсы"
+        };
+        return map[value] || value || "-";
+      }
+
+      function renderWorkGalleryEditor() {
+        if (!workEditGalleryList) return;
+        if (!workEditGallery.length) {
+          workEditGalleryList.innerHTML = "<div class='note'>Фото внутри карточки пока нет</div>";
+          return;
+        }
+        workEditGalleryList.innerHTML = workEditGallery
+          .map(function (path, idx) {
+            return (
+              "<div class='work-gallery-item'>" +
+              "<img src='/" + esc(path) + "' alt=''>" +
+              "<div class='work-gallery-path'>" + esc(path) + "</div>" +
+              "<button class='btn-danger' type='button' data-work-gallery-del='" + idx + "'>Удалить</button>" +
+              "</div>"
+            );
+          })
+          .join("");
       }
 
       function renderWorks() {
@@ -669,12 +823,12 @@
               ? "<img src='/" + esc(media) + "' alt=''>"
               : "<span>media</span>";
             return (
-              "<article class='work-item'>" +
+              "<article class='work-item' data-work-open='" + esc(it.id) + "'>" +
               "<div class='work-thumb'>" + thumb + "</div>" +
               "<div class='work-meta'>" +
-              "<div><strong>" + esc(it.i18nKey || it.id) + "</strong></div>" +
-              "<div><strong>category:</strong> " + esc(it.category || "-") + "</div>" +
-              "<div><strong>kind:</strong> " + esc(it.kind || "-") + "</div>" +
+              "<div><strong>" + esc(it.title || ("Карточка #" + it.id)) + "</strong></div>" +
+              "<div>" + esc(it.description || "") + "</div>" +
+              "<div><strong>Категория:</strong> " + esc(categoryLabel(it.category)) + "</div>" +
               "<div class='work-actions'>" +
               "<button class='btn-ghost' data-work-edit='" + esc(it.id) + "' type='button'>Редактировать</button>" +
               "<button class='btn-danger' data-work-del='" + esc(it.id) + "' type='button'>Удалить</button>" +
@@ -689,11 +843,14 @@
       async function loadWorks() {
         try {
           var res = await fetch("/api/works", { credentials: "same-origin" });
+          if (!res.ok) throw new Error("works unavailable");
           var data = await res.json();
-          works = Array.isArray(data) ? data : [];
+          works = Array.isArray(data) && data.length ? data : FALLBACK_WORKS.slice();
           renderWorks();
         } catch (_e) {
-          worksList.innerHTML = "<div class='note'>Не удалось загрузить карточки</div>";
+          works = FALLBACK_WORKS.slice();
+          renderWorks();
+          setNotice("API карточек недоступен — показаны локальные данные");
         }
       }
 
@@ -718,6 +875,40 @@
           fillContacts(payload.contacts);
         } catch (_e) {
           setNotice("Не удалось загрузить контакты");
+        }
+      }
+
+      function renderLeads() {
+        if (!leads.length) {
+          leadsBody.innerHTML = "<tr><td colspan='6'>Пока нет заявок</td></tr>";
+          return;
+        }
+        leadsBody.innerHTML = leads
+          .map(function (it) {
+            return (
+              "<tr>" +
+              "<td>" + esc(it.id) + "</td>" +
+              "<td>" + esc(it.name) + "</td>" +
+              "<td>" + esc(it.email || "-") + "</td>" +
+              "<td>" + esc(it.phone || "-") + "</td>" +
+              "<td>" + esc(it.message || "") + "</td>" +
+              "<td>" + esc(it.date || "") + "</td>" +
+              "</tr>"
+            );
+          })
+          .join("");
+      }
+
+      async function loadLeads() {
+        try {
+          var res = await fetch("/api/leads", { credentials: "same-origin" });
+          if (!res.ok) throw new Error("leads unavailable");
+          var data = await res.json();
+          leads = Array.isArray(data) ? data : [];
+          renderLeads();
+        } catch (_e) {
+          leads = [];
+          renderLeads();
         }
       }
 
@@ -747,29 +938,20 @@
 
       function openWorkEdit(item) {
         workEditId = item.id;
-        workEditI18nKey.value = item.i18nKey || item.id || "";
+        workEditI18nKey.value = item.id || "";
+        workEditTitle.value = item.title || "";
+        workEditDescription.value = item.description || "";
         workEditCategory.value = item.category || "";
-        workEditKind.value = item.kind || "image";
         workEditMediaPath.value = workPreviewPath(item);
-        workEditTitle.value = "";
-        workEditDescription.value = "";
-        if (workEditI18nKey.value) {
-          fetch("/api/admin/translations/" + encodeURIComponent(workEditI18nKey.value), {
-            credentials: "same-origin",
-          })
-            .then(function (res) { return res.ok ? res.json() : null; })
-            .then(function (data) {
-              if (!data || !data.ok) return;
-              workEditTitle.value = data.title || "";
-              workEditDescription.value = data.description || "";
-            })
-            .catch(function () {});
-        }
+        workEditGallery = getWorkGallery(item);
+        renderWorkGalleryEditor();
+        if (workEditGalleryInput) workEditGalleryInput.value = "";
         workEditModal.classList.remove("hidden");
       }
 
       function closeWorkEdit() {
         workEditId = null;
+        workEditGallery = [];
         workEditModal.classList.add("hidden");
       }
 
@@ -929,13 +1111,11 @@
       worksCreateForm.addEventListener("submit", async function (e) {
         e.preventDefault();
         var payload = {
-          i18nKey: Number(workI18nKey.value) || undefined,
+          title: workTitle.value.trim(),
+          description: workDescription.value.trim(),
           category: workCategory.value.trim(),
-          kind: normalizeWorkKind(workKind.value),
+          photo: workMediaPath.value.trim(),
         };
-        var media = workMediaPath.value.trim();
-        if (payload.kind === "video") payload.video = media;
-        else payload.thumb = media;
 
         var res = await fetch("/api/works", {
           method: "POST",
@@ -976,41 +1156,51 @@
             setNotice("Не удалось удалить карточку");
           }
         }
+
+        var openCard = e.target.closest("[data-work-open]");
+        if (openCard && !e.target.closest("button")) {
+          var openId = Number(openCard.getAttribute("data-work-open"));
+          var openItem = works.find(function (it) { return Number(it.id) === openId; });
+          if (openItem) openWorkEdit(openItem);
+        }
       });
 
       workEditUploadBtn.addEventListener("click", function () {
         uploadWorkFile(workEditUploadFile, workEditMediaPath);
       });
 
+      workEditGalleryAddBtn.addEventListener("click", function () {
+        var path = workEditGalleryInput.value.trim();
+        if (!path) return;
+        workEditGallery.push(path);
+        workEditGalleryInput.value = "";
+        renderWorkGalleryEditor();
+      });
+
+      workEditGalleryList.addEventListener("click", function (e) {
+        var del = e.target.closest("[data-work-gallery-del]");
+        if (!del) return;
+        var idx = Number(del.getAttribute("data-work-gallery-del"));
+        if (Number.isNaN(idx)) return;
+        workEditGallery.splice(idx, 1);
+        renderWorkGalleryEditor();
+      });
+
       workEditSaveBtn.addEventListener("click", async function () {
         if (!workEditId) return;
-        var i18nKey = Number(workEditI18nKey.value) || undefined;
         var payload = {
-          i18nKey: i18nKey,
+          title: workEditTitle.value.trim(),
+          description: workEditDescription.value.trim(),
           category: workEditCategory.value.trim(),
-          kind: normalizeWorkKind(workEditKind.value),
+          photo: workEditMediaPath.value.trim(),
         };
-        var media = workEditMediaPath.value.trim();
-        if (payload.kind === "video") payload.video = media;
-        else payload.thumb = media;
         var res = await fetch("/api/works/" + workEditId, {
           method: "PUT",
           credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
+          headers: withAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify(payload),
         });
         if (res.ok) {
-          if (i18nKey) {
-            await fetch("/api/admin/translations/" + encodeURIComponent(i18nKey), {
-              method: "PUT",
-              credentials: "same-origin",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                title: workEditTitle.value.trim(),
-                description: workEditDescription.value.trim(),
-              }),
-            });
-          }
           setNotice("Карточка сохранена");
           closeWorkEdit();
           loadWorks();

@@ -79,6 +79,8 @@
         photoAlt: "Контакт",
         submit: "Отправить",
         consent: "Согласен на обработку персональных данных",
+        consentHtml:
+          'Согласен с <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">политикой конфиденциальности</a> и обработкой персональных данных',
         phName: "Ваше имя",
         phContact: "Email или Telegram",
         phMessage: "Расскажите о проекте",
@@ -217,6 +219,8 @@
         photoAlt: "Contact",
         submit: "Send",
         consent: "I agree to the processing of personal data",
+        consentHtml:
+          'I agree with the <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">privacy policy</a> and personal data processing',
         phName: "Your name",
         phContact: "Email or Telegram",
         phMessage: "Tell us about your project",

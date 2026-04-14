@@ -1,0 +1,184 @@
+[
+  {
+    "id": 1,
+    "title": "AI  для MOVITRA",
+    "description": "Серия визуалов и креативов для рекламной кампании.",
+    "photo": "image_work/DenBOND_ai-movitra-ice.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 2,
+    "title": "AI визуал для Вашего бренда",
+    "description": "Концепт изображений под social media и performance.",
+    "photo": "image_work/DenBOND_ai-maslenitsa.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 3,
+    "title": "AI креатив Times Square",
+    "description": "Промо-стиль для digital-outdoor подачи.",
+    "photo": "image_work/DenBOND_ai-timessquare.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 4,
+    "title": "Собственное портфолио",
+    "description": "Разработка и сборка современного сайта-портфолио.",
+    "photo": "image_work/DenBOND_portfolio.webp",
+    "category": "development"
+  },
+  {
+    "id": 5,
+    "title": "Telegram-бот (скриншот)",
+    "description": "Разработка ботов с ИИ и без.",
+    "photo": "image_work/DenBOND_bot-screen.webp",
+    "category": "bots"
+  },
+  {
+    "id": 6,
+    "title": "Карточка для маркетплейса",
+    "description": "Оформление карточки товара и визуальная подача.",
+    "photo": "image_work/DenBOND_wb-shirt-result.webp",
+    "category": "marketplaces"
+  },
+  {
+    "id": 7,
+    "title": "Креатив для MOVITRA",
+    "description": "Креативная подача любого продукта",
+    "photo": "image_work/DenBOND_photo4.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 8,
+    "title": "AI креатив на масленицу",
+    "description": "Можем делать что угодно и из чего угодно",
+    "photo": "image_work/DenBOND_photo5.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 9,
+    "title": "Креативная подача",
+    "description": "Сториз для салона оптики",
+    "photo": "image_work/DenBOND_ai-glasses-table.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 10,
+    "title": "Собстненно моя виртуальная мастерская",
+    "description": "",
+    "photo": "image_work/DenBOND_contact-photo.webp",
+    "category": "development"
+  },
+  {
+    "id": 11,
+    "title": "Карточки для МП",
+    "description": "Сделано за 1 день",
+    "photo": "image_work/DenBOND_photo3 .webp",
+    "category": "marketplaces"
+  },
+  {
+    "id": 12,
+    "title": "Креативная подача очков",
+    "description": "Сделано для салона оптики",
+    "photo": "image_work/DenBOND_photo1 .webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 13,
+    "title": "Демонстрация очков",
+    "description": "Креативная подача для салона оптики",
+    "photo": "image_work/DenBOND_photo4-.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 14,
+    "title": "Сториз для салона",
+    "description": "Хотели люди креатива... Получили)))",
+    "photo": "image_work/DenBOND_photo3.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 15,
+    "title": "Аватарка для соц. сетей",
+    "description": "Так же можно анимировать (для тг)",
+    "photo": "image_work/DenBOND_photo6.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 16,
+    "title": "Карточка для МП",
+    "description": "Повышает конверсию, проверено",
+    "photo": "image_work/DenBOND_photo1.webp",
+    "category": "marketplaces"
+  },
+  {
+    "id": 17,
+    "title": "Креативная подача очков",
+    "description": "Очки были проданы в этот же день",
+    "photo": "image_work/DenBOND_photo2.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 18,
+    "title": "Креативная реклама очков",
+    "description": "Сделано для салона оптики за 20 минут (проданы в течении недели)",
+    "photo": "image_work/DenBOND_ai-cartier.webp",
+    "category": "ai-content"
+  },
+  {
+    "id": 19,
+    "title": "Креативная реклама Магния",
+    "description": "Сделано за 3 дня",
+    "photo": "",
+    "category": "video",
+    "video": "video_work/reel1.mp4"
+  },
+  {
+    "id": 20,
+    "title": "Каламбур (юмор)",
+    "description": "Делал для себя (заняло 1 неделю)",
+    "photo": "",
+    "category": "video",
+    "video": "video_work/reel5.mp4"
+  },
+  {
+    "id": 21,
+    "title": "Автоматизация бизнеса (фамилии и суммы вымышлены)",
+    "description": "Люди считали и сводили эти таблицы 2-3 дня... Каждый месяц.... и посмотрите, что получилось)))) Заказчик (девушка) рыдала от счастья.",
+    "photo": "",
+    "category": "bots",
+    "video": "video_work/table-automation-bot.mp4"
+  },
+  {
+    "id": 22,
+    "title": "Рекламный ролик",
+    "description": "Сделано для салона оптики. За неделю.",
+    "photo": "",
+    "category": "video",
+    "video": "video_work/reel7.mp4"
+  },
+  {
+    "id": 23,
+    "title": "Рилс для инстаграм",
+    "description": "Набрал более 1 Миллиона просмотров за 1 месяц",
+    "photo": "",
+    "category": "video",
+    "video": "video_work/reel3.mp4"
+  },
+  {
+    "id": 24,
+    "title": "Рекламный ролик",
+    "description": "Горизонтальный формат (для тв)",
+    "photo": "",
+    "category": "video",
+    "video": "video_work/reel4.mp4"
+  },
+  {
+    "id": 25,
+    "title": "Реклама для оптики",
+    "description": "Реклама для reels. Сделано за 30 мин.",
+    "photo": "",
+    "category": "video",
+    "video": "video_work/reel2.mp4"
+  }
+]

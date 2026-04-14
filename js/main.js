@@ -516,20 +516,15 @@
   }
 
   function initReviewsSlider() {
-    var root = document.getElementById("reviewsShowcase");
-    var heroQuote = document.getElementById("reviewHeroQuote");
-    var heroName = document.getElementById("reviewHeroName");
-    var heroRole = document.getElementById("reviewHeroRole");
-    var heroAvatar = document.getElementById("reviewHeroAvatar");
-    var heroStars = document.getElementById("reviewHeroStars");
-    var miniGrid = document.getElementById("reviewsMiniGrid");
-    var miniHint = document.getElementById("reviewsMiniHint");
-    var miniPrev = document.getElementById("reviewsMiniPrev");
-    var miniNext = document.getElementById("reviewsMiniNext");
-    var miniDots = document.getElementById("reviewsMiniDots");
-    if (!root || !heroQuote || !heroName || !heroRole || !heroAvatar || !heroStars || !miniGrid) return;
+    var root = document.getElementById("reviews3d");
+    var track = document.getElementById("reviewsTrack");
+    var prev = document.getElementById("reviewsPrev");
+    var next = document.getElementById("reviewsNext");
+    var counter = document.getElementById("reviewsCounter");
+    var empty = document.getElementById("reviewsEmpty");
+    if (!root || !track || !prev || !next || !counter || !empty) return;
 
-    var items = [
+    var FALLBACK_REVIEWS = [
       {
         rating: 5,
         quote:
@@ -612,132 +607,186 @@
           "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=160&h=160&fit=crop&auto=format",
       },
     ];
-
+    var items = [];
     var active = 0;
-    var miniPage = 0;
     var autoTimer = null;
+    var touchStartX = 0;
+    var touchMoveX = 0;
     var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    function setHero(item) {
-      heroStars.setAttribute("data-rating", String(item.rating));
-      heroStars.setAttribute("aria-label", "Оценка " + item.rating + " из 5");
-      heroQuote.textContent = item.quote;
-      heroName.textContent = item.name;
-      heroRole.textContent = item.role;
-      heroAvatar.src = item.avatar;
-      heroAvatar.alt = item.name;
-      initReviewStars();
+    function starString(n) {
+      var count = Math.max(1, Math.min(5, Number(n) || 5));
+      return new Array(count + 1).join("★");
     }
 
-    function getPool() {
-      return items.filter(function (_, i) {
-        return i !== active;
+    function cardHtml(item) {
+      var reply = item.reply
+        ? '<div class="review-3d-card__reply"><strong>💬 Ответ:</strong> ' + escapeHtml(item.reply) + "</div>"
+        : "";
+      return (
+        '<div class="review-3d-card__stars">' +
+        starString(item.rating) +
+        '</div><blockquote class="review-3d-card__quote">' +
+        escapeHtml(item.quote || "") +
+        '</blockquote><div class="review-3d-card__author"><img class="review-3d-card__avatar" src="' +
+        escapeAttr(item.avatar || "") +
+        '" alt="' +
+        escapeAttr(item.name || "") +
+        '"><div><p class="review-3d-card__name">' +
+        escapeHtml(item.name || "") +
+        '</p><p class="review-3d-card__role">' +
+        escapeHtml(item.role || "") +
+        "</p></div></div>" +
+        reply
+      );
+    }
+
+    function escapeHtml(v) {
+      return String(v || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function escapeAttr(v) {
+      return escapeHtml(v).replace(/"/g, "&quot;");
+    }
+
+    function render() {
+      track.innerHTML = "";
+      if (!items.length) {
+        empty.hidden = false;
+        counter.textContent = "0 / 0";
+        return;
+      }
+      empty.hidden = true;
+      counter.textContent = active + 1 + " / " + items.length;
+
+      var prevIdx = (active - 1 + items.length) % items.length;
+      var nextIdx = (active + 1) % items.length;
+      var visible = [
+        { idx: prevIdx, side: "prev" },
+        { idx: active, side: "center" },
+        { idx: nextIdx, side: "next" },
+      ];
+
+      visible.forEach(function (entry) {
+        var card = document.createElement("article");
+        card.className = "review-3d-card" + (entry.side === "center" ? " is-active" : "");
+        card.setAttribute("role", "listitem");
+        card.innerHTML = cardHtml(items[entry.idx]);
+        if (entry.side === "center") {
+          card.style.transform = "translate3d(-50%, 0, 0) scale(1) rotateY(0deg)";
+          card.style.opacity = "1";
+          card.style.zIndex = "3";
+          card.style.filter = "none";
+        } else if (entry.side === "prev") {
+          card.style.transform = "translate3d(-78%, 16px, -150px) scale(0.8) rotateY(35deg)";
+          card.style.opacity = "0.5";
+          card.style.zIndex = "2";
+          card.style.filter = "brightness(0.82)";
+        } else {
+          card.style.transform = "translate3d(-22%, 16px, -150px) scale(0.8) rotateY(-35deg)";
+          card.style.opacity = "0.5";
+          card.style.zIndex = "2";
+          card.style.filter = "brightness(0.82)";
+        }
+        track.appendChild(card);
       });
     }
 
-    function getMiniPageCount() {
-      return Math.max(1, Math.ceil(getPool().length / 4));
+    function nextSlide() {
+      if (!items.length) return;
+      active = (active + 1) % items.length;
+      render();
     }
 
-    function getMiniItems() {
-      var pool = getPool();
-      var pageCount = getMiniPageCount();
-      if (miniPage >= pageCount) miniPage = 0;
-      var start = miniPage * 4;
-      return pool.slice(start, start + 4);
+    function prevSlide() {
+      if (!items.length) return;
+      active = (active - 1 + items.length) % items.length;
+      render();
     }
 
-    function renderMiniDots() {
-      if (!miniDots) return;
-      miniDots.innerHTML = "";
-      var pageCount = getMiniPageCount();
-      for (var i = 0; i < pageCount; i++) {
-        (function (dotIdx) {
-          var dot = document.createElement("button");
-          dot.type = "button";
-          dot.className = "reviews-mini-controls__dot" + (dotIdx === miniPage ? " is-active" : "");
-          dot.setAttribute("aria-label", "Страница " + (dotIdx + 1));
-          dot.addEventListener("click", function () {
-            miniPage = dotIdx;
-            renderMini();
-          });
-          miniDots.appendChild(dot);
-        })(i);
+    function startAuto() {
+      if (reduceMotion || items.length < 2) return;
+      if (autoTimer) window.clearInterval(autoTimer);
+      autoTimer = window.setInterval(nextSlide, 5000);
+    }
+
+    function stopAuto() {
+      if (autoTimer) {
+        window.clearInterval(autoTimer);
+        autoTimer = null;
       }
     }
 
-    function renderMini() {
-      miniGrid.innerHTML = "";
-      var miniItems = getMiniItems();
-      miniItems.forEach(function (item) {
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "review-mini";
-        btn.setAttribute("role", "listitem");
-        btn.setAttribute("aria-label", "Показать отзыв: " + item.name);
-        var shortTxt = item.quote.length > 130 ? item.quote.slice(0, 130).trim() + "…" : item.quote;
-        btn.innerHTML =
-          '<p class="review-mini__text">' +
-          shortTxt +
-          '</p><div class="review-mini__meta"><span class="review-mini__name">' +
-          item.name +
-          '</span><span class="review-mini__role">' +
-          item.role +
-          "</span></div>";
-        btn.addEventListener("click", function () {
-          active = items.indexOf(item);
-          miniPage = 0;
-          sync();
-          restartAuto();
+    function bindTouch() {
+      root.addEventListener(
+        "touchstart",
+        function (e) {
+          if (!e.touches || !e.touches[0]) return;
+          touchStartX = e.touches[0].clientX;
+          touchMoveX = touchStartX;
+          stopAuto();
+        },
+        { passive: true }
+      );
+
+      root.addEventListener(
+        "touchmove",
+        function (e) {
+          if (!e.touches || !e.touches[0]) return;
+          touchMoveX = e.touches[0].clientX;
+        },
+        { passive: true }
+      );
+
+      root.addEventListener("touchend", function () {
+        var dx = touchMoveX - touchStartX;
+        if (Math.abs(dx) > 42) {
+          if (dx < 0) nextSlide();
+          else prevSlide();
+        }
+        startAuto();
+      });
+    }
+
+    function loadReviews() {
+      return fetch("/api/reviews/public", {
+        method: "GET",
+        credentials: "same-origin",
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("Cannot load reviews");
+          return res.json();
+        })
+        .then(function (data) {
+          items = Array.isArray(data) && data.length ? data : FALLBACK_REVIEWS.slice();
+          active = 0;
+          render();
+          startAuto();
+        })
+        .catch(function () {
+          items = FALLBACK_REVIEWS.slice();
+          render();
+          startAuto();
         });
-        miniGrid.appendChild(btn);
-      });
-      if (miniHint) {
-        miniHint.textContent = items.length + " отзывов — выберите карточку или листайте страницы";
-      }
-      renderMiniDots();
     }
 
-    function sync() {
-      setHero(items[active]);
-      renderMini();
-    }
-
-    function restartAuto() {
-      if (reduceMotion) return;
-      if (autoTimer) window.clearInterval(autoTimer);
-      autoTimer = window.setInterval(function () {
-        active = (active + 1) % items.length;
-        miniPage = 0;
-        sync();
-      }, 7000);
-    }
-
-    sync();
-    restartAuto();
-    root.addEventListener("mouseenter", function () {
-      if (autoTimer) window.clearInterval(autoTimer);
-      autoTimer = null;
+    prev.addEventListener("click", function () {
+      prevSlide();
+      startAuto();
     });
-    root.addEventListener("mouseleave", function () {
-      restartAuto();
+
+    next.addEventListener("click", function () {
+      nextSlide();
+      startAuto();
     });
-    if (miniPrev) {
-      miniPrev.addEventListener("click", function () {
-        var count = getMiniPageCount();
-        miniPage = (miniPage - 1 + count) % count;
-        renderMini();
-        restartAuto();
-      });
-    }
-    if (miniNext) {
-      miniNext.addEventListener("click", function () {
-        var count = getMiniPageCount();
-        miniPage = (miniPage + 1) % count;
-        renderMini();
-        restartAuto();
-      });
-    }
+
+    root.addEventListener("mouseenter", stopAuto);
+    root.addEventListener("mouseleave", startAuto);
+    bindTouch();
+    loadReviews();
   }
 
   function initReviewFormModal() {
@@ -851,109 +900,61 @@
   initReviewsSlider();
   initReviewFormModal();
 
-  var PORTFOLIO_ITEMS = [
-    {
-      id: 1,
-      category: "ai-content",
-      kind: "image",
-      thumb: "image_work/DenBOND_ai-movitra-ice.webp",
-      gallery: [
-        "image_work/DenBOND_ai-movitra-ice.webp",
-        "image_work/DenBOND_ai-cartier.webp",
-        "image_work/DenBOND_photo4-.webp",
-        "image_work/DenBOND_photo4.webp",
-        "image_work/DenBOND_photo2.webp",
-      ],
-      galleryPhotoCount: 5,
-    },
-    {
-      id: 2,
-      category: "ai-content",
-      kind: "image",
-      thumb: "image_work/DenBOND_ai-maslenitsa.webp",
-      gallery: ["image_work/DenBOND_ai-maslenitsa.webp", "image_work/DenBOND_photo3.webp", "image_work/DenBOND_photo5.webp"],
-      galleryPhotoCount: 3,
-    },
-    {
-      id: 3,
-      category: "ai-content",
-      kind: "image",
-      thumb: "image_work/DenBOND_ai-timessquare.webp",
-      gallery: ["image_work/DenBOND_ai-timessquare.webp", "image_work/DenBOND_photo6.webp", "image_work/DenBOND_ai-glasses-table.webp"],
-      galleryPhotoCount: 3,
-    },
-    {
-      id: 4,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel3.mp4",
-      badge: true,
-    },
-    {
-      id: 5,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel4.mp4",
-    },
-    {
-      id: 6,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel1.mp4",
-    },
-    {
-      id: 7,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel2.mp4",
-    },
-    {
-      id: 8,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel5.mp4",
-    },
-    {
-      id: 9,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel6.mp4",
-    },
-    {
-      id: 14,
-      category: "video",
-      kind: "video",
-      video: "video_work/reel7.mp4",
-    },
-    {
-      id: 10,
-      category: "development",
-      kind: "image",
-      thumb: "image_work/DenBOND_bot-screen.webp",
-      gallery: ["image_work/DenBOND_bot-screen.webp"],
-    },
-    {
-      id: 11,
-      category: "marketplaces",
-      kind: "image",
-      thumb: "image_work/DenBOND_wb-shirt-result.webp",
-      gallery: ["image_work/DenBOND_wb-shirt-result.webp", "image_work/DenBOND_photo1.webp"],
-      galleryPhotoCount: 2,
-    },
-    {
-      id: 12,
-      category: "development",
-      kind: "image",
-      thumb: "image_work/DenBOND_portfolio.webp",
-      gallery: ["image_work/DenBOND_portfolio.webp"],
-    },
-    {
-      id: 13,
-      category: "bots",
-      kind: "video",
-      video: "video_work/table-automation-bot.mp4",
-    },
+  var FALLBACK_PORTFOLIO_ITEMS = [
+    { id: 1, title: "AI кампания для MOVITRA", description: "Серия визуалов и креативов для рекламной кампании.", photo: "image_work/DenBOND_ai-movitra-ice.webp", category: "ai-content" },
+    { id: 2, title: "AI визуал для бренда", description: "Концепт изображений под social media и performance.", photo: "image_work/DenBOND_ai-maslenitsa.webp", category: "ai-content" },
+    { id: 3, title: "AI креатив Times Square", description: "Промо-стиль для digital-outdoor подачи.", photo: "image_work/DenBOND_ai-timessquare.webp", category: "ai-content" },
+    { id: 4, title: "Портфолио-сайт", description: "Разработка и сборка современного сайта-портфолио.", photo: "image_work/DenBOND_portfolio.webp", category: "development" },
+    { id: 5, title: "Telegram-бот", description: "Сценарии, автоматизация заявок и интеграции.", photo: "image_work/DenBOND_bot-screen.webp", category: "bots" },
+    { id: 6, title: "Карточка для маркетплейса", description: "Оформление карточки товара и визуальная подача.", photo: "image_work/DenBOND_wb-shirt-result.webp", category: "marketplaces" }
   ];
+  var PORTFOLIO_ITEMS = FALLBACK_PORTFOLIO_ITEMS.slice();
+
+  function normalizePortfolioItems(items) {
+    if (!Array.isArray(items)) return [];
+    return items
+      .map(function (it, idx) {
+        if (!it || typeof it !== "object") return null;
+        var photo =
+          typeof it.photo === "string" && it.photo.trim()
+            ? it.photo.trim()
+            : typeof it.thumb === "string" && it.thumb.trim()
+              ? it.thumb.trim()
+              : Array.isArray(it.gallery) && it.gallery[0]
+                ? String(it.gallery[0]).trim()
+                : "";
+        var video =
+          typeof it.video === "string" && it.video.trim() ? it.video.trim() : "";
+        if (!photo && !video) return null;
+        return {
+          id: Number(it.id) || idx + 1,
+          title: typeof it.title === "string" && it.title.trim() ? it.title.trim() : "Проект",
+          description: typeof it.description === "string" ? it.description.trim() : "",
+          photo: photo,
+          video: video,
+          category: typeof it.category === "string" && it.category.trim() ? it.category.trim() : "development",
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function loadPortfolioItems() {
+    return fetch("/api/works", {
+      method: "GET",
+      credentials: "same-origin",
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Failed to load works");
+        return res.json();
+      })
+      .then(function (items) {
+        var normalized = normalizePortfolioItems(items);
+        PORTFOLIO_ITEMS = normalized.length ? normalized : FALLBACK_PORTFOLIO_ITEMS.slice();
+      })
+      .catch(function () {
+        PORTFOLIO_ITEMS = FALLBACK_PORTFOLIO_ITEMS.slice();
+      });
+  }
 
   function initPortfolio() {
     var grid = document.getElementById("portfolioGrid");
@@ -1082,119 +1083,68 @@
     }
 
     function createCardEl(item) {
-      var getCopy =
-        window.SiteI18n && window.SiteI18n.getPortfolioCardCopy
-          ? window.SiteI18n.getPortfolioCardCopy.bind(window.SiteI18n)
-          : function (id) {
-              return { title: "", desc: "", tag: "" };
-            };
-      var copy = getCopy(item.id);
-
+      var categoryMap = {
+        "video": "Видеопродакшн",
+        "ai-content": "AI-контент",
+        "development": "Разработка",
+        "bots": "Боты",
+        "marketplaces": "Маркетплейсы"
+      };
       var article = document.createElement("article");
       article.className = "portfolio-card";
       article.setAttribute("data-id", String(item.id));
 
       var media = document.createElement("div");
       media.className = "portfolio-card__media";
-
-      if (item.kind === "image") {
+      if (item.video) {
+        var vid = document.createElement("video");
+        vid.className = "portfolio-card__video portfolio-card__img";
+        vid.src = item.video;
+        vid.muted = true;
+        vid.defaultMuted = true;
+        vid.playsInline = true;
+        vid.setAttribute("playsinline", "");
+        vid.setAttribute("preload", "metadata");
+        media.appendChild(vid);
+      } else {
         var img = document.createElement("img");
-        img.src = item.thumb;
-        img.alt = "";
+        img.src = item.photo;
+        img.alt = item.title || "";
         img.loading = "lazy";
         img.className = "portfolio-card__img";
         media.appendChild(img);
-        if (item.galleryPhotoCount && item.galleryPhotoCount > 1) {
-          var gc = document.createElement("span");
-          gc.className = "portfolio-card__gallery-count";
-          gc.setAttribute("aria-hidden", "true");
-          var cam =
-            window.InlineIcons && window.InlineIcons.raw && window.InlineIcons.raw.camera
-              ? window.InlineIcons.raw.camera
-              : "";
-          gc.innerHTML =
-            '<span class="portfolio-card__gallery-cam">' +
-            cam +
-            "</span><span class=\"portfolio-card__gallery-num\">" +
-            item.galleryPhotoCount +
-            "</span>";
-          media.appendChild(gc);
-        }
-      } else if (item.kind === "video") {
-        media.classList.add("portfolio-card__media--video");
-        var v = document.createElement("video");
-        v.className = "portfolio-card__video";
-        v.setAttribute("muted", "");
-        v.setAttribute("loop", "");
-        v.setAttribute("playsinline", "");
-        v.setAttribute("preload", "metadata");
-        v.muted = true;
-        v.defaultMuted = true;
-        v.src = item.video;
-        media.appendChild(v);
-        var play = document.createElement("div");
-        play.className = "portfolio-card__play";
-        play.setAttribute("aria-hidden", "true");
-        play.innerHTML =
-          '<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>';
-        media.appendChild(play);
-        if (item.badge && window.SiteI18n && window.SiteI18n.getPortfolioBadgeText) {
-          var bd = document.createElement("span");
-          bd.className = "portfolio-card__badge";
-          bd.textContent = window.SiteI18n.getPortfolioBadgeText();
-          media.appendChild(bd);
-        }
       }
 
       var body = document.createElement("div");
       body.className = "portfolio-card__body";
       var h = document.createElement("h3");
       h.className = "portfolio-card__title";
-      h.textContent = copy.title;
+      h.textContent = item.title || "";
       var p = document.createElement("p");
       p.className = "portfolio-card__desc";
-      p.textContent = copy.desc;
+      p.textContent = item.description || "";
       body.appendChild(h);
       body.appendChild(p);
-      if (copy.tag) {
+      var categoryText = categoryMap[item.category] || item.category || "";
+      if (categoryText) {
         var tg = document.createElement("span");
         tg.className = "portfolio-card__tag";
-        if (window.InlineIcons && window.InlineIcons.s14 && window.InlineIcons.tagIconKey) {
-          var svgHtml = window.InlineIcons.s14(window.InlineIcons.tagIconKey(copy.tag));
-          if (svgHtml) {
-            var ic = document.createElement("span");
-            ic.className = "portfolio-card__tag-icon";
-            ic.setAttribute("aria-hidden", "true");
-            ic.innerHTML = svgHtml;
-            tg.appendChild(ic);
-          }
-        }
-        var tx = document.createElement("span");
-        tx.className = "portfolio-card__tag-text";
-        tx.textContent = copy.tag;
-        tg.appendChild(tx);
+        tg.textContent = categoryText;
         body.appendChild(tg);
       }
 
       article.appendChild(media);
       article.appendChild(body);
-
-      if (item.kind === "video") bindVideoCard(article, item);
-
-      article.addEventListener("click", function (e) {
-        if (item.kind === "video" && article.getAttribute("data-video-suppress-modal") === "1") {
-          article.removeAttribute("data-video-suppress-modal");
-          e.preventDefault();
-          e.stopPropagation();
+      article.addEventListener("click", function () {
+        if (item.video && window.openVideoModal) {
+          window.openVideoModal(item.video);
           return;
         }
-        if (item.gallery && item.gallery.length && window.openGalleryModal) {
-          window.openGalleryModal(item.gallery, 0, {
-            title: copy.title || "",
-            desc: copy.desc || "",
+        if (window.openGalleryModal && item.photo) {
+          window.openGalleryModal([item.photo], 0, {
+            title: item.title || "",
+            desc: item.description || "",
           });
-        } else if (item.video && window.openVideoModal) {
-          window.openVideoModal(item.video);
         }
       });
 
@@ -1209,6 +1159,9 @@
         var el = createCardEl(item);
         grid.appendChild(el);
         els.push(el);
+        if (item.video) {
+          bindVideoCard(el, item);
+        }
       });
       if (moreWrap) moreWrap.hidden = !showMoreVisible();
       window.requestAnimationFrame(function () {
@@ -1237,9 +1190,11 @@
       });
     }
 
-    window.__refreshPortfolio = render;
+    window.__refreshPortfolio = function () {
+      loadPortfolioItems().then(render);
+    };
 
-    render();
+    loadPortfolioItems().then(render);
   }
 
   function initAboutStats() {
@@ -1346,16 +1301,37 @@
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var data = new FormData(contactForm);
-      console.log("Заявка (демо):", Object.fromEntries(data.entries()));
-      var msg =
-        window.SiteI18n && window.SiteI18n.t
-          ? window.SiteI18n.t("contact.alertThanks")
-          : "Спасибо! Заявка принята (демо-режим — данные выведены в консоль).";
-      alert(msg);
-      contactForm.reset();
-      document.querySelectorAll(".tag.is-active").forEach(function (t) {
-        t.classList.remove("is-active");
-      });
+      var name = String(data.get("name") || "").trim();
+      var contact = String(data.get("contact") || "").trim();
+      var message = String(data.get("message") || "").trim();
+      var email = contact.indexOf("@") !== -1 ? contact : "";
+      var phone = email ? "" : contact;
+
+      fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          phone: phone,
+          message: message,
+        }),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("Lead save failed");
+          var msg =
+            window.SiteI18n && window.SiteI18n.t
+              ? window.SiteI18n.t("contact.alertThanks")
+              : "Спасибо! Заявка принята.";
+          alert(msg);
+          contactForm.reset();
+          document.querySelectorAll(".tag.is-active").forEach(function (t) {
+            t.classList.remove("is-active");
+          });
+        })
+        .catch(function () {
+          alert("Не удалось отправить заявку. Попробуйте позже.");
+        });
     });
   }
 })();

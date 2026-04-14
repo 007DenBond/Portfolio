@@ -230,30 +230,16 @@
       <div class="container reviews-shell">
         <div class="reviews-col__head section-animate">
           <h2 class="reviews-col__title" id="reviews-title" data-i18n="trust.reviewsTitle">Что говорят клиенты</h2>
-          <button type="button" class="btn btn--outline reviews-col__cta" id="openReviewForm" data-i18n="trust.leaveReview">Оставить отзыв</button>
         </div>
-        <div class="reviews-showcase section-animate" id="reviewsShowcase">
-          <article class="review-hero" id="reviewHeroCard">
-            <div class="review-hero__stars review-stars" id="reviewHeroStars" data-rating="5" aria-label="Оценка 5 из 5"></div>
-            <blockquote class="review-hero__quote" id="reviewHeroQuote"></blockquote>
-            <div class="review-hero__author">
-              <img class="review-hero__avatar" id="reviewHeroAvatar" alt="" width="54" height="54" loading="lazy" decoding="async" />
-              <div>
-                <p class="review-hero__name" id="reviewHeroName"></p>
-                <p class="review-hero__role" id="reviewHeroRole"></p>
-              </div>
-            </div>
-          </article>
-          <div class="reviews-mini-wrap">
-            <p class="reviews-mini-wrap__hint label-mono" id="reviewsMiniHint">9 отзывов — нажмите на карточку справа</p>
-            <div class="reviews-mini-controls">
-              <button type="button" class="reviews-mini-controls__arrow" id="reviewsMiniPrev" aria-label="Предыдущие отзывы">‹</button>
-              <div class="reviews-mini-controls__dots" id="reviewsMiniDots" role="tablist" aria-label="Страницы мини-отзывов"></div>
-              <button type="button" class="reviews-mini-controls__arrow" id="reviewsMiniNext" aria-label="Следующие отзывы">›</button>
-            </div>
-            <div class="reviews-mini-grid" id="reviewsMiniGrid" role="list"></div>
+        <div class="reviews-3d section-animate" id="reviews3d">
+          <button type="button" class="reviews-3d__arrow reviews-3d__arrow--prev" id="reviewsPrev" aria-label="Предыдущий отзыв">←</button>
+          <div class="reviews-3d__viewport" id="reviewsViewport">
+            <div class="reviews-3d__track" id="reviewsTrack" role="list"></div>
           </div>
+          <button type="button" class="reviews-3d__arrow reviews-3d__arrow--next" id="reviewsNext" aria-label="Следующий отзыв">→</button>
         </div>
+        <p class="reviews-3d__counter label-mono section-animate" id="reviewsCounter">1 / 1</p>
+        <div class="reviews-3d__empty section-animate" id="reviewsEmpty" hidden>Отзывы скоро появятся</div>
       </div>
     </section>
 
@@ -319,7 +305,7 @@
             </label>
             <label class="form-check">
               <input type="checkbox" name="consent" required />
-              <span data-i18n="contact.consent">Согласен на обработку персональных данных</span>
+              <span data-i18n-html="contact.consentHtml">Согласен с <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">политикой конфиденциальности</a> и обработкой персональных данных</span>
             </label>
             <button type="submit" class="contact-form__submit" data-i18n="contact.submit">Отправить</button>
           </form>
@@ -338,6 +324,7 @@
         </span>
       </a>
       <p class="footer__copy">© 2025 Den BOND. Москва.</p>
+      <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer" class="footer__copy">Политика конфиденциальности</a>
       <div class="footer__social">
         <a href="https://t.me/Bondalet" class="footer__social-link" aria-label="Telegram" target="_blank" rel="noopener noreferrer"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg></a>
         <a href="mailto:prostodenbond@gmail.com" class="footer__social-link" aria-label="Email"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></a>
