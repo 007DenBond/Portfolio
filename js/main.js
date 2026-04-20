@@ -798,9 +798,36 @@
     var fileInput = document.getElementById("reviewFiles");
     var fileList = document.getElementById("reviewFilesList");
     var dropZone = modal ? modal.querySelector(".review-file-drop") : null;
+    var avatarInput = document.getElementById("reviewAvatarInput");
+    var avatarPreview = document.getElementById("reviewAvatarPreview");
+    var avatarPlaceholder = document.getElementById("reviewAvatarPlaceholder");
+    var avatarDrop = modal ? modal.querySelector(".review-avatar-drop") : null;
+    var step1 = document.getElementById("reviewStep1");
+    var step2 = document.getElementById("reviewStep2");
+    var step3 = document.getElementById("reviewStep3");
+    var backBtn = document.getElementById("reviewBackBtn");
+    var consentCheckbox = document.getElementById("reviewConsentCheckbox");
+    var finalSubmitBtn = document.getElementById("reviewFinalSubmitBtn");
+    var closeAfterSuccessBtn = document.getElementById("reviewCloseAfterSuccessBtn");
+    var submitError = document.getElementById("reviewSubmitError");
+    var pendingPayload = null;
+
+    function setStep(step) {
+      if (!step1 || !step2 || !step3) return;
+      var isFirst = step === 1;
+      var isSecond = step === 2;
+      var isThird = step === 3;
+      step1.classList.toggle("review-form__step--active", isFirst);
+      step2.classList.toggle("review-form__step--active", isSecond);
+      step3.classList.toggle("review-form__step--active", isThird);
+      step1.hidden = !isFirst;
+      step2.hidden = !isSecond;
+      step3.hidden = !isThird;
+    }
 
     function openModal() {
       if (!modal) return;
+      setStep(1);
       modal.removeAttribute("hidden");
       body.style.overflow = "hidden";
       if (closeBtn) closeBtn.focus();
@@ -810,6 +837,7 @@
       if (!modal) return;
       modal.setAttribute("hidden", "");
       body.style.overflow = "";
+      resetReviewForm();
     }
 
     if (openBtn) openBtn.addEventListener("click", openModal);
@@ -837,6 +865,48 @@
 
     if (fileInput) {
       fileInput.addEventListener("change", syncFileList);
+    }
+
+    function syncAvatarPreview() {
+      if (!avatarInput || !avatarPreview || !avatarPlaceholder) return;
+      var file = avatarInput.files && avatarInput.files[0];
+      if (!file) {
+        avatarPreview.hidden = true;
+        avatarPreview.removeAttribute("src");
+        avatarPlaceholder.hidden = false;
+        return;
+      }
+      var url = URL.createObjectURL(file);
+      avatarPreview.src = url;
+      avatarPreview.hidden = false;
+      avatarPlaceholder.hidden = true;
+    }
+
+    if (avatarInput) {
+      avatarInput.addEventListener("change", syncAvatarPreview);
+    }
+
+    if (avatarDrop && avatarInput) {
+      ["dragenter", "dragover"].forEach(function (ev) {
+        avatarDrop.addEventListener(ev, function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+      avatarDrop.addEventListener("drop", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var dt = e.dataTransfer;
+        if (!dt || !dt.files || !dt.files.length) return;
+        try {
+          var d = new DataTransfer();
+          d.items.add(dt.files[0]);
+          avatarInput.files = d.files;
+          syncAvatarPreview();
+        } catch (_e) {
+          /* fallback for old browsers */
+        }
+      });
     }
 
     if (dropZone && fileInput) {
@@ -867,33 +937,115 @@
       });
     }
 
+    function resetReviewForm() {
+      if (form) form.reset();
+      setStep(1);
+      pendingPayload = null;
+      syncFileList();
+      syncAvatarPreview();
+      if (consentCheckbox) consentCheckbox.checked = false;
+      if (finalSubmitBtn) finalSubmitBtn.disabled = true;
+      if (submitError) {
+        submitError.hidden = true;
+        submitError.textContent = "";
+      }
+    }
+
+    if (consentCheckbox && finalSubmitBtn) {
+      consentCheckbox.addEventListener("change", function () {
+        finalSubmitBtn.disabled = !consentCheckbox.checked;
+        if (consentCheckbox.checked && submitError && !submitError.hidden) {
+          submitError.hidden = true;
+          submitError.textContent = "";
+        }
+      });
+    }
+
+    if (backBtn) {
+      backBtn.addEventListener("click", function () {
+        setStep(1);
+      });
+    }
+
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
+        if (step1 && !step1.classList.contains("review-form__step--active")) return;
         var fd = new FormData(form);
         var payload = {};
         fd.forEach(function (val, key) {
           if (typeof val === "string") payload[key] = val;
         });
-        console.log("Отзыв (демо), поля:", payload);
-        if (fileInput && fileInput.files && fileInput.files.length) {
-          var info = [];
-          for (var k = 0; k < fileInput.files.length; k++) {
-            var f = fileInput.files[k];
-            info.push(f.name + " (" + f.type + ", " + f.size + " байт)");
-          }
-          console.log("Отзыв (демо), вложения:", info);
+        pendingPayload = payload;
+        if (consentCheckbox) consentCheckbox.checked = false;
+        if (finalSubmitBtn) finalSubmitBtn.disabled = true;
+        if (submitError) {
+          submitError.hidden = true;
+          submitError.textContent = "";
         }
-        var rmsg =
-          window.SiteI18n && window.SiteI18n.t
-            ? window.SiteI18n.t("reviews.alertThanks")
-            : "Спасибо! Отзыв принят (демо — данные в консоли).";
-        alert(rmsg);
-        form.reset();
-        syncFileList();
+        setStep(2);
+      });
+    }
+
+    if (finalSubmitBtn) {
+      finalSubmitBtn.addEventListener("click", async function () {
+        if (!consentCheckbox || !consentCheckbox.checked) {
+          if (submitError) {
+            submitError.textContent = "Необходимо дать согласие на обработку данных";
+            submitError.hidden = false;
+          }
+          return;
+        }
+        finalSubmitBtn.disabled = true;
+        try {
+          var submitData = new FormData();
+          submitData.append("name", String((pendingPayload && pendingPayload.review_name) || "").trim());
+          submitData.append("contact", String((pendingPayload && pendingPayload.review_contact) || "").trim());
+          submitData.append("role", String((pendingPayload && pendingPayload.review_role) || "").trim());
+          submitData.append("quote", String((pendingPayload && pendingPayload.review_text) || "").trim());
+          submitData.append("consent", "true");
+          if (avatarInput && avatarInput.files && avatarInput.files[0]) {
+            submitData.append("avatar", avatarInput.files[0]);
+          }
+          if (fileInput && fileInput.files && fileInput.files[0]) {
+            submitData.append("attachment", fileInput.files[0]);
+          }
+          var res = await fetch("/api/reviews/submit", {
+            method: "POST",
+            body: submitData,
+          });
+          if (!res.ok) {
+            var errText = "Не удалось отправить отзыв. Попробуйте позже.";
+            try {
+              var errPayload = await res.json();
+              if (errPayload && errPayload.error) errText = String(errPayload.error);
+            } catch (_e2) {
+              /* ignore parse error */
+            }
+            throw new Error(errText);
+          }
+          if (submitError) {
+            submitError.hidden = true;
+            submitError.textContent = "";
+          }
+          setStep(3);
+        } catch (err) {
+          finalSubmitBtn.disabled = false;
+          if (submitError) {
+            submitError.textContent = (err && err.message) || "Не удалось отправить отзыв";
+            submitError.hidden = false;
+          }
+        }
+      });
+    }
+
+    if (closeAfterSuccessBtn) {
+      closeAfterSuccessBtn.addEventListener("click", function () {
         closeModal();
       });
     }
+
+    resetReviewForm();
   }
 
   initReviewStars();
@@ -1298,8 +1450,60 @@
 
   var contactForm = document.getElementById("contactForm");
   if (contactForm) {
+    var contactStep1 = document.getElementById("contactFormStep1");
+    var contactStepThanks = document.getElementById("contactFormStepThanks");
+    var contactConsent = document.getElementById("contactConsentCheckbox");
+    var contactConsentWrap = document.getElementById("contactConsentWrap");
+    var contactConsentHint = document.getElementById("contactConsentHint");
+    var contactSubmitBtn = document.getElementById("contactSubmitBtn");
+    var contactOkBtn = document.getElementById("contactFormOkBtn");
+
+    function resetContactUi() {
+      if (contactStep1) {
+        contactStep1.classList.add("contact-form__step--active");
+        contactStep1.hidden = false;
+      }
+      if (contactStepThanks) {
+        contactStepThanks.classList.remove("contact-form__step--active");
+        contactStepThanks.hidden = true;
+      }
+      if (contactConsentWrap) contactConsentWrap.classList.remove("is-invalid");
+      if (contactConsentHint) {
+        contactConsentHint.textContent = "Необходимо дать согласие";
+        contactConsentHint.hidden = true;
+      }
+      if (contactSubmitBtn) contactSubmitBtn.disabled = !(contactConsent && contactConsent.checked);
+    }
+
+    if (contactConsent && contactSubmitBtn) {
+      contactSubmitBtn.disabled = !contactConsent.checked;
+      contactConsent.addEventListener("change", function () {
+        contactSubmitBtn.disabled = !contactConsent.checked;
+        if (contactConsent.checked) {
+          if (contactConsentWrap) contactConsentWrap.classList.remove("is-invalid");
+          if (contactConsentHint) contactConsentHint.hidden = true;
+        }
+      });
+    }
+
+    if (contactOkBtn) {
+      contactOkBtn.addEventListener("click", function () {
+        contactForm.reset();
+        document.querySelectorAll(".tag.is-active").forEach(function (t) {
+          t.classList.remove("is-active");
+        });
+        resetContactUi();
+      });
+    }
+
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (contactConsent && !contactConsent.checked) {
+        if (contactConsentWrap) contactConsentWrap.classList.add("is-invalid");
+        if (contactConsentHint) contactConsentHint.hidden = false;
+        if (contactSubmitBtn) contactSubmitBtn.disabled = true;
+        return;
+      }
       var data = new FormData(contactForm);
       var name = String(data.get("name") || "").trim();
       var contact = String(data.get("contact") || "").trim();
@@ -1319,19 +1523,23 @@
       })
         .then(function (res) {
           if (!res.ok) throw new Error("Lead save failed");
-          var msg =
-            window.SiteI18n && window.SiteI18n.t
-              ? window.SiteI18n.t("contact.alertThanks")
-              : "Спасибо! Заявка принята.";
-          alert(msg);
-          contactForm.reset();
-          document.querySelectorAll(".tag.is-active").forEach(function (t) {
-            t.classList.remove("is-active");
-          });
+          if (contactStep1) {
+            contactStep1.classList.remove("contact-form__step--active");
+            contactStep1.hidden = true;
+          }
+          if (contactStepThanks) {
+            contactStepThanks.classList.add("contact-form__step--active");
+            contactStepThanks.hidden = false;
+          }
         })
         .catch(function () {
-          alert("Не удалось отправить заявку. Попробуйте позже.");
+          if (contactConsentHint) {
+            contactConsentHint.textContent = "Не удалось отправить заявку. Попробуйте позже.";
+            contactConsentHint.hidden = false;
+          }
         });
     });
+
+    resetContactUi();
   }
 })();

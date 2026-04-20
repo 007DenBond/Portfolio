@@ -24,14 +24,23 @@ function normalizeLead(input, fallbackId) {
   const name = typeof input.name === "string" ? input.name.trim() : "";
   const email = typeof input.email === "string" ? input.email.trim() : "";
   const phone = typeof input.phone === "string" ? input.phone.trim() : "";
+  const contact =
+    typeof input.contact === "string" && input.contact.trim()
+      ? input.contact.trim()
+      : email || phone || "";
   const message = typeof input.message === "string" ? input.message.trim() : "";
+  const now = new Date().toISOString();
   return {
     id: fallbackId,
     name,
     email,
     phone,
+    contact,
     message,
-    date: new Date().toISOString(),
+    date: now,
+    status: "new",
+    isNew: true,
+    readAt: "",
   };
 }
 
@@ -54,6 +63,22 @@ router.post("/leads", async (req, res) => {
   items.unshift(lead);
   await writeLeads(items);
   return res.status(201).json({ ok: true, lead });
+});
+
+router.put("/leads/:id/read", requireAuth, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ ok: false, error: "Invalid id" });
+  const items = await readLeads();
+  const idx = items.findIndex((it) => Number(it.id) === id);
+  if (idx === -1) return res.status(404).json({ ok: false, error: "Not found" });
+  items[idx] = {
+    ...items[idx],
+    status: "read",
+    isNew: false,
+    readAt: new Date().toISOString(),
+  };
+  await writeLeads(items);
+  return res.json({ ok: true, lead: items[idx] });
 });
 
 router.get("/leads", requireAuth, async (_req, res) => {

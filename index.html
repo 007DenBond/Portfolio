@@ -230,6 +230,9 @@
       <div class="container reviews-shell">
         <div class="reviews-col__head section-animate">
           <h2 class="reviews-col__title" id="reviews-title" data-i18n="trust.reviewsTitle">Что говорят клиенты</h2>
+          <button type="button" class="reviews-col__cta reviews-col__cta--leave-review" id="openReviewForm">
+            ОСТАВИТЬ ОТЗЫВ
+          </button>
         </div>
         <div class="reviews-3d section-animate" id="reviews3d">
           <button type="button" class="reviews-3d__arrow reviews-3d__arrow--prev" id="reviewsPrev" aria-label="Предыдущий отзыв">←</button>
@@ -291,23 +294,31 @@
           </div>
 
           <form class="contact-form contact-form--compact" id="contactForm" novalidate>
-            <label class="form-field">
-              <span class="form-field__label" data-i18n="contact.labelName">Имя</span>
-              <input type="text" name="name" data-i18n-placeholder="contact.phName" placeholder="Ваше имя" required />
-            </label>
-            <label class="form-field">
-              <span class="form-field__label" data-i18n="contact.labelContact">Контакт</span>
-              <input type="text" name="contact" data-i18n-placeholder="contact.phContact" placeholder="Email или Telegram" required />
-            </label>
-            <label class="form-field">
-              <span class="form-field__label" data-i18n="contact.labelMessage">Сообщение</span>
-              <textarea name="message" rows="5" data-i18n-placeholder="contact.phMessage" placeholder="Расскажите о проекте" required></textarea>
-            </label>
-            <label class="form-check">
-              <input type="checkbox" name="consent" required />
-              <span data-i18n-html="contact.consentHtml">Согласен с <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">политикой конфиденциальности</a> и обработкой персональных данных</span>
-            </label>
-            <button type="submit" class="contact-form__submit" data-i18n="contact.submit">Отправить</button>
+            <div class="contact-form__step contact-form__step--active" id="contactFormStep1">
+              <label class="form-field">
+                <span class="form-field__label" data-i18n="contact.labelName">Имя</span>
+                <input type="text" name="name" data-i18n-placeholder="contact.phName" placeholder="Ваше имя" required />
+              </label>
+              <label class="form-field">
+                <span class="form-field__label" data-i18n="contact.labelContact">Контакт</span>
+                <input type="text" name="contact" data-i18n-placeholder="contact.phContact" placeholder="Email или Telegram" required />
+              </label>
+              <label class="form-field">
+                <span class="form-field__label" data-i18n="contact.labelMessage">Сообщение</span>
+                <textarea name="message" rows="5" data-i18n-placeholder="contact.phMessage" placeholder="Расскажите о проекте" required></textarea>
+              </label>
+              <label class="form-check" id="contactConsentWrap">
+                <input type="checkbox" name="consent" id="contactConsentCheckbox" required />
+                <span data-i18n-html="contact.consentHtml">Согласен с <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">политикой конфиденциальности</a> и обработкой персональных данных</span>
+              </label>
+              <p class="contact-form__consent-hint" id="contactConsentHint" hidden>Необходимо дать согласие</p>
+              <button type="submit" class="contact-form__submit" id="contactSubmitBtn" data-i18n="contact.submit" disabled>Отправить</button>
+            </div>
+            <div class="contact-form__step" id="contactFormStepThanks" hidden>
+              <h3 class="contact-form__thanks-title">Спасибо! 🎉</h3>
+              <p class="contact-form__thanks-text">Заявка принята, свяжемся с вами в ближайшее время</p>
+              <button type="button" class="contact-form__submit contact-form__submit--ok" id="contactFormOkBtn">Хорошо</button>
+            </div>
           </form>
         </div>
       </div>
@@ -345,27 +356,77 @@
       <h3 class="review-form-modal__title" id="reviewFormTitle" data-i18n="reviews.modalTitle">Оставить отзыв</h3>
       <p class="review-form-modal__hint" data-i18n="reviews.modalHint">Расскажите о проекте. Можно прикрепить скрин или короткое видео — так отзыву доверяют больше.</p>
       <form class="review-form" id="reviewSubmitForm" novalidate>
-        <label class="form-field">
-          <span class="form-field__label label-mono" data-i18n="reviews.name">Имя</span>
-          <input type="text" name="review_name" autocomplete="name" data-i18n-placeholder="reviews.namePh" placeholder="Как к вам обращаться" required />
-        </label>
-        <label class="form-field">
-          <span class="form-field__label label-mono" data-i18n="reviews.contact">Контакт</span>
-          <input type="text" name="review_contact" autocomplete="email" data-i18n-placeholder="reviews.contactPh" placeholder="Почта или Telegram" required />
-        </label>
-        <label class="form-field">
-          <span class="form-field__label label-mono" data-i18n="reviews.text">Отзыв</span>
-          <textarea name="review_text" rows="5" data-i18n-placeholder="reviews.textPh" placeholder="Текст отзыва" required></textarea>
-        </label>
-        <div class="form-field form-field--file">
-          <span class="form-field__label label-mono" data-i18n="reviews.file">Вложение</span>
-          <label class="review-file-drop">
-            <input type="file" name="review_files" id="reviewFiles" accept="image/*,video/*" multiple />
-            <span class="review-file-drop__text" data-i18n="reviews.fileDrop">Фото или видео — перетащите сюда или нажмите для выбора</span>
-            <span class="review-file-drop__files" id="reviewFilesList" aria-live="polite"></span>
+        <div class="review-form__step review-form__step--active" id="reviewStep1">
+          <label class="form-field">
+            <span class="form-field__label label-mono" data-i18n="reviews.name">Имя</span>
+            <input type="text" name="review_name" autocomplete="name" data-i18n-placeholder="reviews.namePh" placeholder="Как к вам обращаться" required />
           </label>
+
+          <div class="form-field form-field--avatar">
+            <div class="form-field__label-wrap">
+              <span class="form-field__label label-mono">ФОТО (необязательно)</span>
+            </div>
+            <label class="review-avatar-drop" for="reviewAvatarInput">
+              <input type="file" name="review_avatar" id="reviewAvatarInput" accept="image/*" />
+              <span class="review-avatar-drop__placeholder" id="reviewAvatarPlaceholder" aria-hidden="true">
+                <span class="review-avatar-drop__icon">📷</span>
+                <span class="review-avatar-drop__text">Фото</span>
+              </span>
+              <img id="reviewAvatarPreview" class="review-avatar-drop__preview" alt="Превью фото" hidden />
+            </label>
+          </div>
+
+          <label class="form-field">
+            <span class="form-field__label label-mono" data-i18n="reviews.contact">Контакт</span>
+            <input type="text" name="review_contact" autocomplete="email" data-i18n-placeholder="reviews.contactPh" placeholder="Почта или телефон" required />
+          </label>
+
+          <label class="form-field">
+            <span class="form-field__label-wrap">
+              <span class="form-field__label label-mono">ДОЛЖНОСТЬ / МЕСТО РАБОТЫ</span>
+              <span class="form-field__optional">необязательно</span>
+            </span>
+            <input type="text" name="review_role" placeholder="Например: дизайнер в Яндексе" />
+          </label>
+
+          <label class="form-field">
+            <span class="form-field__label label-mono" data-i18n="reviews.text">Отзыв</span>
+            <textarea name="review_text" rows="5" data-i18n-placeholder="reviews.textPh" placeholder="Текст отзыва" required></textarea>
+          </label>
+
+          <div class="form-field form-field--file">
+            <span class="form-field__label label-mono" data-i18n="reviews.file">Вложение</span>
+            <label class="review-file-drop">
+              <input type="file" name="review_files" id="reviewFiles" accept="image/*,video/*" multiple />
+              <span class="review-file-drop__text" data-i18n="reviews.fileDrop">Фото или видео — перетащите сюда или нажмите для выбора</span>
+              <span class="review-file-drop__files" id="reviewFilesList" aria-live="polite"></span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full" data-review-next-step>Отправить отзыв</button>
         </div>
-        <button type="submit" class="btn btn--primary btn--full" data-i18n="reviews.submit">Отправить отзыв</button>
+
+        <div class="review-form__step" id="reviewStep2" hidden>
+          <h4 class="review-form__confirm-title">Почти готово!</h4>
+          <p class="review-form__confirm-text">Подтвердите согласие на обработку данных</p>
+          <label class="review-consent">
+            <input type="checkbox" id="reviewConsentCheckbox" required />
+            <span>Я согласен(а) на обработку персональных данных в соответствии с <a href="/privacy-policy/" target="_blank" rel="noopener noreferrer">политикой конфиденциальности</a></span>
+          </label>
+          <p class="review-form__error" id="reviewSubmitError" hidden></p>
+          <div class="review-form__actions">
+            <button type="button" class="review-form__btn-back" id="reviewBackBtn">Назад</button>
+            <button type="button" class="review-form__btn-submit" id="reviewFinalSubmitBtn" disabled>Отправить</button>
+          </div>
+        </div>
+
+        <div class="review-form__step" id="reviewStep3" hidden>
+          <h4 class="review-form__confirm-title">Спасибо за отзыв! 🎉</h4>
+          <p class="review-form__confirm-text">Мы свяжемся с вами в ближайшее время</p>
+          <div class="review-form__actions review-form__actions--single">
+            <button type="button" class="review-form__btn-submit" id="reviewCloseAfterSuccessBtn">Закрыть</button>
+          </div>
+        </div>
       </form>
     </div>
   </div>
@@ -406,13 +467,18 @@
   const ctx = canvas.getContext('2d');
 
   let width, height;
+  let prevWidth = 0;
+  let prevHeight = 0;
 
   function resize() {
+    prevWidth = width || window.innerWidth;
+    prevHeight = height || window.innerHeight;
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
   }
   resize();
-  window.addEventListener('resize', resize);
 
   function getThemeColors() {
     const style = getComputedStyle(document.documentElement);
@@ -523,6 +589,19 @@
     particles.push(new Particle());
   }
 
+  function redistributeParticles() {
+    const pw = prevWidth || width || 1;
+    const ph = prevHeight || height || 1;
+    particles.forEach(function(p) {
+      p.x = (p.x / pw) * width;
+      p.y = (p.y / ph) * height;
+      if (!Number.isFinite(p.x) || p.x < 0 || p.x > width) p.x = Math.random() * width;
+      if (!Number.isFinite(p.y) || p.y < 0 || p.y > height) p.y = Math.random() * height;
+      p.homeX = p.x;
+      p.homeY = p.y;
+    });
+  }
+
   function drawConnections() {
     const tc = themeColors;
     for (let i = 0; i < particles.length; i++) {
@@ -565,6 +644,7 @@
 
   window.addEventListener('resize', function() {
     resize();
+    redistributeParticles();
   });
 })();
   </script>
